@@ -10,7 +10,7 @@ Welcome to the Nepali Sparsa project! This is an e-commerce website built using 
 **Backend Setup**
 1. Navigate to the backend directory:
 
-cd api
+```cd api```
 
 2. Install Dependencies
 
