@@ -10,22 +10,21 @@ Welcome to the Nepali Sparsa project! This is an e-commerce website built using 
 **Backend Setup**
 1. Navigate to the backend directory:
 
-```cd api```
+    ```cd api```
 
 2. Install Dependencies
 
-npm install
+    ```npm install```
 
 3. Set up environment variables:
 
 Create a .env file in the api directory with the following content:
-
-DATABASE_URL="your_database_connection_string"
-PORT=5000
+    ```DATABASE_URL="your_database_connection_string"```
+    ```PORT=5000```
 
 4. Initialize Prisma:
 
-npx prisma init
+    ```npx prisma init```
 
 5. Update Prisma schema:
 
@@ -33,25 +32,25 @@ Edit the prisma/schema.prisma file to define your data models.
 
 6. Run Prisma migrations:
 
-npx prisma migrate dev --name init
+    ```npx prisma migrate dev --name init```
 
 7. Generate Prisma client:
 
-npx prisma generate
+    ```npx prisma generate```
 
 8. Start the backend Server
 
-npm start
+    ```npm start```
 
 **Frontend Setup**
 
 1. Navigate to the frontend directory:
 
-cd client
+    ```cd client```
 
 2. Install dependencies:
 
-npm install
+    ```npm install```
 
 3. Set up environment variables:
 
@@ -61,7 +60,7 @@ REACT_APP_API_URL="http://localhost:5000/api"
 
 4. Start the frontend development server:
 
-npm start
+    ```npm start```
 
 
 ### Project Features
