@@ -1,0 +1,109 @@
+.deals-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.deals-section h4 {
+    font-size: 1rem;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.deals-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.deals-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.deal-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    width: 300px;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.deal-card:hover {
+    transform: translateY(-5px);
+}
+
+.deal-card img {
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+}
+
+.deal-card .discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #a70072;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.deal-card .category {
+    font-size: 0.875rem;
+    color: #888;
+    margin-top: 10px;
+}
+
+.deal-card .title {
+    font-size: 1.125rem;
+    margin: 10px 0;
+    color: #333;
+}
+
+.deal-card .price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #a70072;
+}
+
+.deal-card .old-price {
+    text-decoration: line-through;
+    color: #e0e0e0;
+}
+
+.deal-card .rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffa500;
+    font-size: 0.875rem;
+    margin: 10px 0;
+}
+
+.deal-card .description {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 10px 0;
+}
+
+.deal-card .shop-now {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #a70072;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.deal-card .shop-now:hover {
+    background-color: #851161;
+}
