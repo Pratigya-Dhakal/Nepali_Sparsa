@@ -1,0 +1,113 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+.footer {
+    background-color: #f8f8f8;
+    padding: 40px 0;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.column {
+    flex: 1;
+    min-width: 200px;
+    margin: 0 15px;
+}
+
+.column h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.column ul li {
+    margin-bottom: 5px;
+}
+
+.column ul li a {
+    color: #333;
+    text-decoration: none; /* Remove underline */
+}
+
+.column ul li a:hover {
+    color: #a70072;
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+.social a {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 18px;
+    color: #333;
+    text-decoration: none; /* Remove underline */
+}
+
+.social a:hover {
+    color: #a70072;
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+.subscribe {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.subscribe input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 70%;
+    margin-right: 10px;
+}
+
+.subscribe button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #a70072;
+    color: #fff;
+    cursor: pointer;
+}
+
+.subscribe button:hover {
+    background-color: #821560;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.footer-bottom p {
+    margin: 5px 0;
+}
+
+.footer-bottom a {
+    color: #a70072;
+    text-decoration: none; /* Remove underline */
+}
+
+.footer-bottom a:hover {
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+/* Ensure all footer links do not have underlines */
+footer a {
+    text-decoration: none;
+}
