@@ -1,0 +1,21 @@
+.mission-vision {
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+    background-color: #ffffff;
+}
+
+.mission-vision .mission, .mission-vision .vision {
+    width: 45%;
+    text-align: center;
+}
+
+.mission-vision h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.mission-vision p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
