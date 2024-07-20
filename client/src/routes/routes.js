@@ -1,0 +1,25 @@
+// src/route/route.js
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import HomePage from '../pages/HomePage';
+import ShopPage from '../pages/ShopPage';
+import SignInPage from '../pages/SignInPage';
+import SignUpPage from '../pages/SignUpPage';
+import AboutUs from '../pages/AboutUsPage';
+import ContactUsPage from '../pages/ContactUsPage';
+
+const AppRoutes = () => {
+    return (
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/signIn" element={<SignInPage />} />
+            <Route path="/signUp" element={<SignUpPage />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/contact-us" element={<ContactUsPage />} />
+            
+        </Routes>
+    );
+};
+
+export default AppRoutes;
