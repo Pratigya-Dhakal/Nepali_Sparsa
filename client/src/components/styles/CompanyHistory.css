@@ -1,0 +1,17 @@
+.company-history {
+    padding: 40px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.company-history h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.company-history p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin: 0 auto;
+    max-width: 800px;
+}
