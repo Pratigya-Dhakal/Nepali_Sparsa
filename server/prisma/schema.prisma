@@ -7,19 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Verify {
+  VERIFIED
+  NOTVERIFIED
+}
+
 model User {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  username  String     @unique
-  email     String     @unique
-  password  String
-  firstName String
-  lastName  String
-  phone     String?
-  address   UserAddress?
-  orders    Order[]
-  shoppingCart ShoppingCart?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  username      String         @unique
+  email         String         @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  role          Role
+  verify        Verify         @default(NOTVERIFIED)
+  address       UserAddress?
+  orders        Order[]
+  shoppingCart  ShoppingCart?
+  comments      Comment[]
+  replies       Reply[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model UserAddress {
@@ -37,30 +51,68 @@ model UserAddress {
 }
 
 model Product {
-  id           String          @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  description  String
-  price        Float
-  sku          String
-  category     ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId   String @db.ObjectId
-  inventory    ProductInventory @relation(fields: [inventoryId], references: [id])
-  inventoryId  String @db.ObjectId
-  discount     Discount?       @relation(fields: [discountId], references: [id])
-  discountId   String? @db.ObjectId
-  orderItems   OrderItem[]
-  cartItems    CartItem[]
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String
+  price             Float
+  sku               String
+  category          ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId        String          @db.ObjectId
+  subcategory       Subcategory     @relation(fields: [subcategoryId], references: [id])
+  subcategoryId     String          @db.ObjectId
+  inventory         ProductInventory @relation(fields: [inventoryId], references: [id])
+  inventoryId       String          @db.ObjectId
+  discount          Discount?       @relation(fields: [discountId], references: [id])
+  discountId        String?         @db.ObjectId
+  orderItems        OrderItem[]
+  cartItems         CartItem[]
+  images            ProductImage[]
+  comments          Comment[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model ProductCategory {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  description String?
-  products  Product[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String?
+  parent          ProductCategory?  @relation("CategoryToSubcategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId        String? @db.ObjectId
+  subcategories   ProductCategory[] @relation("CategoryToSubcategory")
+  subSubcategories Subcategory[]    @relation("ProductCategoryToSubcategory")
+  products        Product[]
+  image           CategoryImage?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Subcategory {
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String?
+  parentCategory ProductCategory   @relation("ProductCategoryToSubcategory", fields: [parentCategoryId], references: [id])
+  parentCategoryId String          @db.ObjectId
+  products       Product[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CategoryImage {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  category  ProductCategory   @relation(fields: [categoryId], references: [id])
+  categoryId String           @unique @db.ObjectId
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }
 
 model ProductInventory {
@@ -124,132 +176,25 @@ model CartItem {
   updatedAt DateTime   @updatedAt
 }
 
+model Comment {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  product   Product    @relation(fields: [productId], references: [id])
+  productId String     @db.ObjectId
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @db.ObjectId
+  replies   Reply[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
 
-
-//SQL Schema
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
-
-// model User {
-//   id          Int          @id @default(autoincrement())
-//   username    String       @unique
-//   email       String       @unique
-//   password    String
-//   firstName   String
-//   lastName    String
-//   phone       String?
-//   address     UserAddress?
-//   orders      Order[]
-//   shoppingCart ShoppingCart?
-//   isVerified  Boolean      @default(false)
-//   createdAt   DateTime     @default(now())
-//   updatedAt   DateTime     @updatedAt
-// }
-
-// model UserAddress {
-//   id         Int       @id @default(autoincrement())
-//   user       User      @relation(fields: [userId], references: [id])
-//   userId     Int       @unique
-//   address1   String
-//   address2   String?
-//   city       String
-//   state      String
-//   country    String
-//   postalCode String
-//   createdAt  DateTime  @default(now())
-//   updatedAt  DateTime  @updatedAt
-// }
-
-// model Product {
-//   id           Int             @id @default(autoincrement())
-//   name         String
-//   description  String
-//   price        Float
-//   sku          String
-//   category     ProductCategory  @relation(fields: [categoryId], references: [id])
-//   categoryId   Int
-//   inventory    ProductInventory @relation(fields: [inventoryId], references: [id])
-//   inventoryId  Int
-//   discount     Discount?        @relation(fields: [discountId], references: [id])
-//   discountId   Int?
-//   orderItems   OrderItem[]
-//   cartItems    CartItem[]
-//   createdAt    DateTime         @default(now())
-//   updatedAt    DateTime         @updatedAt
-// }
-
-// model ProductCategory {
-//   id          Int        @id @default(autoincrement())
-//   name        String
-//   description String?
-//   products    Product[]
-//   createdAt   DateTime   @default(now())
-//   updatedAt   DateTime   @updatedAt
-// }
-
-// model ProductInventory {
-//   id        Int       @id @default(autoincrement())
-//   quantity  Int
-//   products  Product[]
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-// }
-
-// model Discount {
-//   id            Int       @id @default(autoincrement())
-//   name          String
-//   description   String?
-//   discountPercent Float
-//   active        Boolean   @default(true)
-//   products      Product[]
-//   createdAt     DateTime  @default(now())
-//   updatedAt     DateTime  @updatedAt
-// }
-
-// model Order {
-//   id        Int       @id @default(autoincrement())
-//   user      User      @relation(fields: [userId], references: [id])
-//   userId    Int
-//   total     Float
-//   items     OrderItem[]
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
-// }
-
-// model OrderItem {
-//   id        Int       @id @default(autoincrement())
-//   order     Order     @relation(fields: [orderId], references: [id])
-//   orderId   Int
-//   product   Product   @relation(fields: [productId], references: [id])
-//   productId Int
-//   quantity  Int
-//   price     Float
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
-// }
-
-// model ShoppingCart {
-//   id        Int       @id @default(autoincrement())
-//   user      User      @relation(fields: [userId], references: [id])
-//   userId    Int       @unique
-//   items     CartItem[]
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-// }
-
-// model CartItem {
-//   id        Int       @id @default(autoincrement())
-//   cart      ShoppingCart @relation(fields: [cartId], references: [id])
-//   cartId    Int
-//   product   Product   @relation(fields: [productId], references: [id])
-//   productId Int
-//   quantity  Int
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-// }
+model Reply {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  comment   Comment    @relation(fields: [commentId], references: [id])
+  commentId String     @db.ObjectId
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @db.ObjectId
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}

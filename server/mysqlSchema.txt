@@ -1,0 +1,138 @@
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+// enum Role {
+//   ADMIN
+//   USER
+// }
+// enum Verify {
+//   VERIFIED
+//   NOTVERIFIED
+// }
+// model User {
+//   id          Int          @id @default(autoincrement())
+//   username    String       @unique
+//   email       String       @unique
+//   password    String
+//   firstName   String
+//   lastName    String
+//   phone       String?
+//   role Role
+//   verify  Verify  @default(NOTVERIFIED) 
+//   address     UserAddress?
+//   orders      Order[]
+//   shoppingCart ShoppingCart?
+//   createdAt   DateTime     @default(now())
+//   updatedAt   DateTime     @updatedAt
+// }
+
+// model UserAddress {
+//   id         Int       @id @default(autoincrement())
+//   user       User      @relation(fields: [userId], references: [id])
+//   userId     Int       @unique
+//   address1   String
+//   address2   String?
+//   city       String
+//   state      String
+//   country    String
+//   postalCode String
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+// }
+
+// model Product {
+//   id           Int             @id @default(autoincrement())
+//   name         String
+//   description  String
+//   price        Float
+//   sku          String
+//   category     ProductCategory  @relation(fields: [categoryId], references: [id])
+//   categoryId   Int
+//   inventory    ProductInventory @relation(fields: [inventoryId], references: [id])
+//   inventoryId  Int
+//   discount     Discount?        @relation(fields: [discountId], references: [id])
+//   discountId   Int?
+//   orderItems   OrderItem[]
+//   cartItems    CartItem[]
+//   createdAt    DateTime         @default(now())
+//   updatedAt    DateTime         @updatedAt
+// }
+
+// model ProductCategory {
+//   id          Int        @id @default(autoincrement())
+//   name        String
+//   description String?
+//   products    Product[]
+//   createdAt   DateTime   @default(now())
+//   updatedAt   DateTime   @updatedAt
+// }
+
+// model ProductInventory {
+//   id        Int       @id @default(autoincrement())
+//   quantity  Int
+//   products  Product[]
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }
+
+// model Discount {
+//   id            Int       @id @default(autoincrement())
+//   name          String
+//   description   String?
+//   discountPercent Float
+//   active        Boolean   @default(true)
+//   products      Product[]
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+// }
+
+// model Order {
+//   id        Int       @id @default(autoincrement())
+//   user      User      @relation(fields: [userId], references: [id])
+//   userId    Int
+//   total     Float
+//   items     OrderItem[]
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+// }
+
+// model OrderItem {
+//   id        Int       @id @default(autoincrement())
+//   order     Order     @relation(fields: [orderId], references: [id])
+//   orderId   Int
+//   product   Product   @relation(fields: [productId], references: [id])
+//   productId Int
+//   quantity  Int
+//   price     Float
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+// }
+
+// model ShoppingCart {
+//   id        Int       @id @default(autoincrement())
+//   user      User      @relation(fields: [userId], references: [id])
+//   userId    Int       @unique
+//   items     CartItem[]
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }
+
+// model CartItem {
+//   id        Int       @id @default(autoincrement())
+//   cart      ShoppingCart @relation(fields: [cartId], references: [id])
+//   cartId    Int
+//   product   Product   @relation(fields: [productId], references: [id])
+//   productId Int
+//   quantity  Int
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }
+
+# DATABASE_URL ="mysql://root:@localhost:3306/nepali_sparsa"
