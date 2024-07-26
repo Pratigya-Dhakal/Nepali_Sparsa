@@ -1,0 +1,140 @@
+.sign-up-container {
+    display: flex;
+    height: 100vh;
+}
+
+.form-section, .image-section {
+    flex: 1; /* This makes both containers take equal space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.form-section {
+    padding: 20px;
+    background-color: #fff;
+}
+
+.image-section {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+
+}
+
+.image-section img {
+    width: 80%; /* Adjust the image to cover the container width */
+    height: 800%; /* Adjust the image to cover the container height */
+    object-fit: cover; /* This will ensure the image covers the area without losing its aspect ratio */
+}
+.form-section {
+    flex: 1;
+    padding: 1rem;
+}
+
+.form-header {
+    text-align: left;
+}
+
+.form-header h1 {
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: #666;
+}
+
+.sign-up-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 0.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.password-input {
+    display: flex;
+    align-items: center;
+}
+
+.password-input .toggle-password {
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.sign-up-button, .google-sign-up-button {
+    background-color: #a70072;
+    color: #fff;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.google-sign-up-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.or-divider {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.or-divider span {
+    background-color: #fff;
+    padding: 0 0.5rem;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.form-footer a {
+    color: #562e0f;
+}
+
+
+.image-section {
+    display: none;
+}
+
+.image-caption {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 1rem;
+    text-align: left;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .image-section {
+    display: block;
+    flex: 1;
+    position: relative;
+    }
+
+    .image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+}

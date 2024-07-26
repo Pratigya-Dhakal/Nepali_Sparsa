@@ -1,0 +1,51 @@
+
+.not-found-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background: #fff;
+}
+
+.not-found-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.not-found-title {
+    font-size: 150px;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('../../assets/heroSection.png') center/cover;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.not-found-subtitle {
+    font-size: 24px;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.not-found-text {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 40px;
+}
+
+.not-found-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.not-found-button:hover {
+    background-color: #555;
+}
