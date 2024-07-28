@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './styles/AddCategory.css';
+import { useParams, useNavigate } from 'react-router-dom';
+import './styles/UpdateCategory.css';
 
-const AddCategory = () => {
+const UpdateCategory = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/admin/categories/${id}`);
+                setName(response.data.name || '');
+                setDescription(response.data.description || '');
+            } catch (error) {
+                console.error('Error fetching category:', error);
+            }
+        };
+
+        fetchCategory();
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,28 +36,26 @@ const AddCategory = () => {
                 formData.append('image', image);
             }
 
-            await axios.post('http://localhost:5000/api/admin/categories', formData, {
+            await axios.put(`http://localhost:5000/api/admin/categories/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            alert('Category added successfully');
-            setName('');
-            setDescription('');
-            setImage(null);
+            alert('Category updated successfully');
+            navigate('/categories'); // Replace with the correct path
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 setError(error.response.data.message);
             } else {
-                console.error('Error adding category:', error);
+                console.error('Error updating category:', error);
             }
         }
     };
 
     return (
         <div className="add-category-container">
-            <h2>Add Category</h2>
+            <h2>Update Category</h2>
             {error && <p className="error-message">{error}</p>}
             <form className="add-category-form" onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -70,11 +85,11 @@ const AddCategory = () => {
                 </div>
                 <div className='form-buttons'>
                     <button type="button" className="btn-cancel-category" onClick={() => window.history.back()}>Cancel</button>
-                    <button type="submit" className="btn-add-category">Add Category</button>
+                    <button type="submit" className="btn-add-category">Update Category</button>
                 </div>
             </form>
         </div>
     );
 };
 
-export default AddCategory;
+export default UpdateCategory;

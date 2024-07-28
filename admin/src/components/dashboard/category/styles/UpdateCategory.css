@@ -69,12 +69,12 @@ h2 {
 }
 
 .btn-add-category:hover {
-    background-color: #115636;
+    background-color: #115356;
 }
 
 .btn-cancel-category {
     background-color: #dc3545;
-    color: black;
+    color: white;
 }
 
 .btn-cancel-category:hover {

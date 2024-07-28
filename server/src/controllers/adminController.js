@@ -279,6 +279,21 @@ export const getAllUsers = async (req, res) => {
     }
 };
 
+export const getCategoryById = async (req, res) => {
+    try {
+        const category = await prisma.productCategory.findUnique({
+            where: { id: req.params.id },
+        });
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+        res.json(category);
+    } catch (error) {
+        console.error('Error fetching category:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 export const replyToComment = async (req, res) => {
     const { commentId } = req.params;
     const { content } = req.body;

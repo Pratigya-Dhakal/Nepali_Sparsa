@@ -3,7 +3,8 @@ import {
     adminSignup, verifyEmail, adminLogin, resendVerificationEmail,
     getAllCategories, addCategory, updateCategory, deleteCategory,
     getAllSubcategories, addSubcategory, updateSubcategory, deleteSubcategory,
-    getAllProducts, addProduct, updateProduct, deleteProduct, getProductsByCategory
+    getAllProducts, addProduct, updateProduct, deleteProduct, getProductsByCategory,
+    getCategoryById
 } from '../controllers/adminController.js';
 import upload from '../middlewares/upload.js';
 
@@ -20,6 +21,7 @@ router.get('/categories', getAllCategories);
 router.post('/categories', upload.single('image'), addCategory);
 router.put('/categories/:categoryId', upload.single('image'), updateCategory);
 router.delete('/categories/:categoryId', deleteCategory);
+router.get('/categories/:id', getCategoryById);
 
 // Subcategory routes
 router.get('/subcategories', getAllSubcategories);
