@@ -127,17 +127,30 @@ export const getAllCategories = async (req, res) => {
 export const addCategory = async (req, res) => {
     const { name, description } = req.body;
     const imageUrl = req.file ? req.file.path : null; // Get uploaded file path
+
     try {
+        // Check if a category with the same name already exists
+        const existingCategory = await prisma.productCategory.findFirst({
+            where: { name },
+        });
+
+        if (existingCategory) {
+            return res.status(400).json({ message: 'Category name already exists' });
+        }
+
+        // Create new category
         const category = await prisma.productCategory.create({
-            data: { 
-                name, 
+            data: {
+                name,
                 description,
                 image: imageUrl ? { create: { url: imageUrl } } : undefined,
             },
         });
+
         res.status(201).json(category);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error creating category:', error); // Log the error to understand what went wrong
+        res.status(500).json({ message: 'Cannot create Category' });
     }
 };
 
