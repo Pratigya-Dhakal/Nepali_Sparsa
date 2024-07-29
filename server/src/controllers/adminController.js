@@ -83,12 +83,13 @@ export const adminLogin = async (req, res) => {
         }
 
         const { accessToken, refreshToken } = generateTokens(admin.id, admin.role);
-        res.status(500).json({ message: 'Login Successful', accessToken, refreshToken });
+        res.status(200).json({ message: 'Login Successful', accessToken, refreshToken });
 
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+
 
 export const resendVerificationEmail = async (req, res) => {
     const { email } = req.body;
@@ -421,5 +422,62 @@ export const resetPassword = async (req, res) => {
         res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error processing request', error });
+    }
+};
+//Get user by id
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+// Delete user by ID
+export const deleteUserById = async (req, res) => {
+    const { id } = req.params; // Ensure the parameter name matches the route
+    try {
+        const user = await prisma.user.findUnique({ where: { id } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await prisma.user.delete({ where: { id } });
+        res.status(204).send(); // No content
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+// Search users by name
+export const searchUserByName = async (req, res) => {
+    const { name } = req.params;
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                OR: [
+                    { firstName: { contains: name, mode: 'insensitive' } },
+                    { lastName: { contains: name, mode: 'insensitive' } }
+                ]
+            }
+        });
+        res.json(users);
+    } catch (error) {
+        console.error('Error searching users:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

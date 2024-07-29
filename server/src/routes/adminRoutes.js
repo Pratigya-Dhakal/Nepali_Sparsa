@@ -4,7 +4,11 @@ import {
     getAllCategories, addCategory, updateCategory, deleteCategory,
     getAllSubcategories, addSubcategory, updateSubcategory, deleteSubcategory,
     getAllProducts, addProduct, updateProduct, deleteProduct, getProductsByCategory,
-    getCategoryById
+    getCategoryById,getOrderedItemsList,
+    getAllUsers,
+    getUserById,
+    deleteUserById,
+    searchUserByName
 } from '../controllers/adminController.js';
 import upload from '../middlewares/upload.js';
 
@@ -37,5 +41,12 @@ router.delete('/products/:productId', deleteProduct);
 
 // Get products by category
 router.get('/products/category/:categoryName', getProductsByCategory);
+router.get('/orders/', getOrderedItemsList);
+
+//user routes
+router.get('/users',getAllUsers)
+router.get('/users/:id',getUserById)
+router.delete('/users/:id',deleteUserById)
+router.get('/users/:name',searchUserByName)
 
 export default router;

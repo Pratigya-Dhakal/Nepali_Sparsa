@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles/Sidebar.css';
+import Logout from '../login/logout';
 
 const Sidebar = () => {
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -50,6 +51,7 @@ const Sidebar = () => {
                 <NavLink to="/admin/users">Users</NavLink>
                 <NavLink to="/admin/comments">Comments</NavLink>
                 <NavLink to="/admin/orders">Orders</NavLink>
+                <Logout />
             </nav>
         </div>
     );

@@ -1,0 +1,28 @@
+.user-detail-container {
+    padding: 20px;
+}
+
+.user-info, .user-address, .user-orders {
+    margin-bottom: 20px;
+}
+
+.user-info p, .user-address p, .user-orders p {
+    margin: 5px 0;
+}
+
+.user-address h3, .user-orders h3 {
+    margin-top: 0;
+}
+
+.user-orders ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.user-orders li {
+    margin-bottom: 10px;
+}
+
+.user-orders p {
+    margin: 5px 0;
+}

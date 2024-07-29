@@ -1,0 +1,52 @@
+.all-users {
+    padding: 20px;
+}
+
+.all-users h2 {
+    margin-bottom: 20px;
+}
+
+.all-users table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.all-users table th, .all-users table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.all-users table th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.all-users table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.all-users table tr:hover {
+    background-color: #ddd;
+}
+
+.all-users .button-delete {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.all-users .button-view {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.all-users .error-message {
+    color: red;
+}
