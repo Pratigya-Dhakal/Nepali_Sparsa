@@ -8,7 +8,7 @@ import {
     getAllUsers,
     getUserById,
     deleteUserById,
-    searchUserByName
+    searchUserByName,getUserDetailById
 } from '../controllers/adminController.js';
 import upload from '../middlewares/upload.js';
 
@@ -46,6 +46,7 @@ router.get('/orders/', getOrderedItemsList);
 //user routes
 router.get('/users',getAllUsers)
 router.get('/users/:id',getUserById)
+router.get('/users/detail/:id',getUserDetailById )
 router.delete('/users/:id',deleteUserById)
 router.get('/users/:name',searchUserByName)
 

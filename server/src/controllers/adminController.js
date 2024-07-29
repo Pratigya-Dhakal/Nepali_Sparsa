@@ -481,3 +481,29 @@ export const searchUserByName = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+export const getUserDetailById = async (req, res) => {
+    const { id: userId } = req.params; // Retrieve the userId from req.params
+
+    if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                address: true,
+                orders: true
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};

@@ -10,6 +10,7 @@ import OrderList from '../components/dashboard/order/OrderList';
 import AllUsers from '../components/dashboard/AllUsers';
 // import UserRoutes from './UserRoutes';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import UserDetail from '../components/dashboard/UserDetail';
 
 const AppRoutes = () => (
     <Routes>
@@ -70,6 +71,16 @@ const AppRoutes = () => (
                 <PrivateRoute>
                     <AdminLayout>
                         <AllUsers />
+                    </AdminLayout>
+                </PrivateRoute>
+            } 
+        />
+        <Route 
+            path="/admin/users/detail/:id" 
+            element={
+                <PrivateRoute>
+                    <AdminLayout>
+                        <UserDetail />
                     </AdminLayout>
                 </PrivateRoute>
             } 

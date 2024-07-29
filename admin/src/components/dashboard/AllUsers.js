@@ -71,7 +71,7 @@ const AllUsers = () => {
                                         Delete
                                     </button>
                                     <NavLink 
-                                        to={`/admin/users/${user.id}`} 
+                                        to={`/admin/users/detail/${user.id}`} 
                                         className="button-view"
                                     >
                                         View

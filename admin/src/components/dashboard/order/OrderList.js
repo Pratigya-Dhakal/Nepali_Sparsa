@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './styles/OrderList.css';
 
 const OrdersList = () => {
     const [orders, setOrders] = useState([]);
