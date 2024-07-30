@@ -54,8 +54,8 @@ const Sidebar = () => {
                     <button onClick={toggleInventory}>Inventory</button>
                     {isInventoryOpen && (
                         <ul>
-                            <li><NavLink to="/admin/inventory/all">All Inventory</NavLink></li>
-                            <li><NavLink to="/admin/inventory/add">Add Inventory</NavLink></li>
+                            <li><NavLink to="/admin/inventories">All Inventory</NavLink></li>
+                            <li><NavLink to="/admin/inventories/add">Add Inventory</NavLink></li>
                         </ul>
                     )}
                 </div>
