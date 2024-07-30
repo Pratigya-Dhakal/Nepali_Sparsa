@@ -1,5 +1,3 @@
-// src/components/admin/Sidebar.js
-
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './styles/Sidebar.css';
@@ -9,10 +7,14 @@ const Sidebar = () => {
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
+    const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+    const [isDiscountOpen, setIsDiscountOpen] = useState(false);
 
     const toggleCategories = () => setIsCategoriesOpen(!isCategoriesOpen);
     const toggleSubcategories = () => setIsSubcategoriesOpen(!isSubcategoriesOpen);
     const toggleProducts = () => setIsProductsOpen(!isProductsOpen);
+    const toggleInventory = () => setIsInventoryOpen(!isInventoryOpen);
+    const toggleDiscount = () => setIsDiscountOpen(!isDiscountOpen);
 
     return (
         <div className="sidebar">
@@ -45,6 +47,24 @@ const Sidebar = () => {
                         <ul>
                             <li><NavLink to="/admin/products/all">All Products</NavLink></li>
                             <li><NavLink to="/admin/products/add">Add Product</NavLink></li>
+                        </ul>
+                    )}
+                </div>
+                <div>
+                    <button onClick={toggleInventory}>Inventory</button>
+                    {isInventoryOpen && (
+                        <ul>
+                            <li><NavLink to="/admin/inventory/all">All Inventory</NavLink></li>
+                            <li><NavLink to="/admin/inventory/add">Add Inventory</NavLink></li>
+                        </ul>
+                    )}
+                </div>
+                <div>
+                    <button onClick={toggleDiscount}>Discounts</button>
+                    {isDiscountOpen && (
+                        <ul>
+                            <li><NavLink to="/admin/discounts/all">All Discounts</NavLink></li>
+                            <li><NavLink to="/admin/discounts/add">Add Discount</NavLink></li>
                         </ul>
                     )}
                 </div>

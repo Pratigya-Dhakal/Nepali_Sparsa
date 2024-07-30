@@ -174,52 +174,131 @@ export const updateCategory = async (req, res) => {
     }
 };
 
-
 export const addProduct = async (req, res) => {
     const { name, description, price, sku, categoryId, subcategoryId, inventoryId, discountId } = req.body;
-    const imageUrls = req.files ? req.files.map(file => file.path) : []; // Get uploaded file paths
+    const images = req.files;
+
     try {
-        const product = await prisma.product.create({
-            data: {
-                name,
-                description,
-                price,
-                sku,
-                category: { connect: { id: categoryId } },
-                subcategory: { connect: { id: subcategoryId } },
-                inventory: { connect: { id: inventoryId } },
-                discount: discountId ? { connect: { id: discountId } } : undefined,
-                images: { create: imageUrls.map(url => ({ url })) },
-            },
+        // Build the product data object conditionally
+        const productData = {
+            name,
+            description,
+            price: parseFloat(price),
+            sku,
+            category: { connect: { id: categoryId } },
+            subcategory: subcategoryId ? { connect: { id: subcategoryId } } : undefined,
+            discount: discountId ? { connect: { id: discountId } } : undefined,
+            images: images && images.length > 0 ? {
+                create: images.map(file => ({
+                    url: `/uploads/${file.filename}`
+                }))
+            } : undefined,
+            // Include inventory only if inventoryId is provided
+            inventory: inventoryId ? { connect: { id: inventoryId } } : undefined
+        };
+
+        // Remove undefined fields from productData
+        Object.keys(productData).forEach(key => {
+            if (productData[key] === undefined) {
+                delete productData[key];
+            }
         });
+
+        // Create the product with the cleaned productData object
+        const product = await prisma.product.create({
+            data: productData,
+            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+        });
+
         res.status(201).json(product);
     } catch (error) {
+        console.error('Error creating product:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-export const updateProduct = async (req, res) => {
-    const { productId } = req.params;
-    const { name, description, price, sku, categoryId, subcategoryId, inventoryId, discountId } = req.body;
-    const imageUrls = req.files ? req.files.map(file => file.path) : []; // Get uploaded file paths
+
+export const getProductById = async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const product = await prisma.product.update({
-            where: { id: productId },
-            data: {
-                name,
-                description,
-                price,
-                sku,
-                category: { connect: { id: categoryId } },
-                subcategory: { connect: { id: subcategoryId } },
-                inventory: { connect: { id: inventoryId } },
-                discount: discountId ? { connect: { id: discountId } } : undefined,
-                images: { deleteMany: {}, create: imageUrls.map(url => ({ url })) },
-            },
+        // Find the product by ID
+        const product = await prisma.product.findUnique({
+            where: { id },
+            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
         });
-        res.json(product);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json(product);
     } catch (error) {
+        console.error('Error retrieving product by ID:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+// Update Product
+export const updateProduct = async (req, res) => {
+    const { id } = req.params;
+    const { name, description, price, sku, categoryId, subcategoryId, inventoryId, discountId } = req.body;
+    const images = req.files;
+
+    try {
+        // Prepare the update data
+        const updateData = {
+            name,
+            description,
+            price: parseFloat(price),
+            sku,
+            category: categoryId ? { connect: { id: categoryId } } : undefined,
+            subcategory: subcategoryId ? { connect: { id: subcategoryId } } : undefined,
+            discount: discountId ? { connect: { id: discountId } } : undefined,
+            inventory: inventoryId ? { connect: { id: inventoryId } } : undefined,
+            images: images && images.length > 0 ? {
+                create: images.map(file => ({
+                    url: `/uploads/${file.filename}`
+                }))
+            } : undefined,
+        };
+
+        // Remove undefined fields from updateData
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] === undefined) {
+                delete updateData[key];
+            }
+        });
+
+        // Update the product
+        const updatedProduct = await prisma.product.update({
+            where: { id },
+            data: updateData,
+            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+        });
+
+        res.status(200).json(updatedProduct);
+    } catch (error) {
+        console.error('Error updating product:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+export const deleteProduct = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Product ID is required' });
+    }
+
+    try {
+        await prisma.product.delete({ where: { id } });
+        res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
@@ -235,41 +314,129 @@ export const deleteCategory = async (req, res) => {
 };
 
 export const getAllProducts = async (req, res) => {
-    try {
-        const products = await prisma.product.findMany();
-        res.json(products);
-    } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-    }
-};
+    // Extract query parameters
+    const { page = 1, pageSize = 10, categoryId, subcategoryId, search } = req.query;
 
-export const deleteProduct = async (req, res) => {
-    const { productId } = req.params;
     try {
-        await prisma.product.delete({ where: { id: productId } });
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-    }
-};
+        // Validate and parse pagination parameters
+        const pageNumber = parseInt(page, 10);
+        const pageSizeNumber = parseInt(pageSize, 10);
 
-export const getProductsByCategory = async (req, res) => {
-    const { categoryName } = req.params;
-    try {
-        const category = await prisma.productCategory.findUnique({
-            where: { name: categoryName },
-            include: { products: true },
-        });
-
-        if (!category) {
-            return res.status(404).json({ message: 'Category not found' });
+        if (isNaN(pageNumber) || isNaN(pageSizeNumber) || pageNumber < 1 || pageSizeNumber < 1) {
+            return res.status(400).json({ message: 'Invalid pagination parameters' });
         }
 
-        res.json(category.products);
+        // Define pagination options
+        const skip = (pageNumber - 1) * pageSizeNumber;
+        const take = pageSizeNumber;
+
+        // Build the query filter
+        const filter = {};
+
+        // Add categoryId to the filter if it's defined
+        if (categoryId) {
+            filter.categoryId = categoryId;
+        }
+
+        // Add subcategoryId to the filter if it's defined and not null
+        if (subcategoryId !== undefined && subcategoryId !== null) {
+            filter.subcategoryId = subcategoryId;
+        }
+
+        // Add search filter if it's defined
+        if (search) {
+            filter.name = { $regex: search, $options: 'i' };
+        }
+
+        // Log the filter and pagination for debugging
+        console.log('Query Filter:', filter);
+        console.log('Pagination:', { skip, take });
+
+        // Fetch the products with the constructed filter and pagination
+        const products = await prisma.product.findMany({
+            where: filter,
+            skip,
+            take,
+            select: {
+                id: true,         // Include the id
+                name: true,
+                price: true,
+                category: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
+
+        // Log fetched products for debugging
+        console.log('Fetched Products:', products);
+
+        res.json(products);  // Return the products array directly
     } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+export const getProductByName = async (req, res) => {
+    const { name } = req.query; // Assuming the name is provided as a query parameter
+
+    try {
+        // Find products by name
+        const products = await prisma.product.findMany({
+            where: {
+                name: {
+                    contains: name, // Use contains for partial matching
+                    mode: 'insensitive' // Case-insensitive search
+                }
+            },
+            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+        });
+
+        if (products.length === 0) {
+            return res.status(404).json({ message: 'No products found' });
+        }
+
+        res.status(200).json(products);
+    } catch (error) {
+        console.error('Error retrieving products by name:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
+// Get Products by Category
+export const getProductsByCategory = async (req, res) => {
+    const { categoryName } = req.params;
+    const { page = 1, pageSize = 10 } = req.query;
+
+    try {
+        const pageNumber = parseInt(page, 10);
+        const pageSizeNumber = parseInt(pageSize, 10);
+
+        if (isNaN(pageNumber) || isNaN(pageSizeNumber) || pageNumber < 1 || pageSizeNumber < 1) {
+            return res.status(400).json({ message: 'Invalid pagination parameters' });
+        }
+
+        const skip = (pageNumber - 1) * pageSizeNumber;
+        const take = pageSizeNumber;
+
+        const products = await prisma.product.findMany({
+            where: { categoryName },
+            skip,
+            take,
+            include: { images: true, category: true, subcategory: true, inventory: true, discount: true },
+        });
+
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching products by category:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -507,3 +674,21 @@ export const getUserDetailById = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+export const getSubcategoriesByCategoryId = async (req, res) => {
+    const { categoryId } = req.query;
+
+    if (!categoryId) {
+        return res.status(400).json({ message: 'Category ID is required' });
+    }
+
+    try {
+        const subcategories = await prisma.subcategory.findMany({
+            where: { parentCategoryId: categoryId },
+        });
+        res.json(subcategories);
+    } catch (error) {
+        console.error('Error fetching subcategories:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+

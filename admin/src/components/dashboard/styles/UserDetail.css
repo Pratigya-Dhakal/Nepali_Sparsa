@@ -106,7 +106,7 @@ h2 {
     margin: 0;
 }
 
-.order-item {
+.order-item,.address-info,.personal-infos {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;

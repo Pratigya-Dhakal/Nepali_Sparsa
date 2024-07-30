@@ -1,14 +1,17 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ProductList from '../components/dashboard/product/ProductList';
-import ProductForm from '../components/dashboard/product/ProductForm';
+import AllProducts from '../components/dashboard/product/AllProducts';
+import AddProduct from '../components/dashboard/product/AddProduct';
+import UpdateProduct from '../components/dashboard/product/UpdateProduct';
+import ViewProduct from '../components/dashboard/product/ViewProduct';
 
 const ProductRoutes = () => {
     return (
         <Routes>
-            <Route path="/admin/products" exact component={ProductList} />
-            <Route path="/admin/products/add" exact component={() => <ProductForm isUpdate={false} />} />
-            <Route path="/admin/products/edit/:productId" exact component={(props) => <ProductForm isUpdate={true} productId={props.match.params.productId} />} />
+            <Route path="/all" element={<AllProducts />} />
+            <Route path="/add" element={<AddProduct />} />
+            <Route path="/:id" element={<ViewProduct />} />
+            <Route path="/update/:id" element={<UpdateProduct />} />
         </Routes>
     );
 };

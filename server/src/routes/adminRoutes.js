@@ -8,8 +8,14 @@ import {
     getAllUsers,
     getUserById,
     deleteUserById,
-    searchUserByName,getUserDetailById
+    searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById
 } from '../controllers/adminController.js';
+import {
+    createInventory, getAllInventories, getInventoryById, updateInventory, deleteInventory
+} from '../controllers/productInventoryController.js';
+import {
+    createDiscount, getAllDiscounts, getDiscountById, updateDiscount, deleteDiscount
+} from '../controllers/discountController.js';
 import upload from '../middlewares/upload.js';
 
 const router = express.Router();
@@ -32,13 +38,14 @@ router.get('/subcategories', getAllSubcategories);
 router.post('/subcategories', addSubcategory);
 router.put('/subcategories/:subcategoryId', updateSubcategory);
 router.delete('/subcategories/:subcategoryId', deleteSubcategory);
+router.get('/subcategoriesByCategory', getSubcategoriesByCategoryId);
 
 // Product routes
 router.get('/products', getAllProducts);
-router.post('/products', upload.array('images'), addProduct);
-router.put('/products/:productId', upload.array('images'), updateProduct);
-router.delete('/products/:productId', deleteProduct);
-
+router.post('/products', upload.array('images', 10), addProduct);
+router.get('/products/:id', getProductById);
+router.put('/products/:id', upload.array('images'), updateProduct);
+router.delete('/products/:id', deleteProduct);
 // Get products by category
 router.get('/products/category/:categoryName', getProductsByCategory);
 router.get('/orders/', getOrderedItemsList);
@@ -49,5 +56,19 @@ router.get('/users/:id',getUserById)
 router.get('/users/detail/:id',getUserDetailById )
 router.delete('/users/:id',deleteUserById)
 router.get('/users/:name',searchUserByName)
+
+// Inventory routes
+router.post('/inventories', createInventory);
+router.get('/inventories', getAllInventories);
+router.get('/inventories/:id', getInventoryById);
+router.put('/inventories/:id', updateInventory);
+router.delete('/inventories/:id', deleteInventory);
+
+// Discount routes
+router.post('/discounts', createDiscount);
+router.get('/discounts', getAllDiscounts);
+router.get('/discounts/:id', getDiscountById);
+router.put('/discounts/:id', updateDiscount);
+router.delete('/discounts/:id', deleteDiscount);
 
 export default router;

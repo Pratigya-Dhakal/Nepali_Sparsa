@@ -8,9 +8,10 @@ import AdminLayout from '../layouts/AdminLayout';
 import ProductRoutes from './ProductRoutes';
 import OrderList from '../components/dashboard/order/OrderList';
 import AllUsers from '../components/dashboard/AllUsers';
-// import UserRoutes from './UserRoutes';
-import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import PrivateRoute from './PrivateRoute';
 import UserDetail from '../components/dashboard/UserDetail';
+import InventoryRoutes from './InventoryRoutes'; // Import InventoryRoutes
+import DiscountRoutes from './DiscountRoutes'; // Import DiscountRoutes
 
 const AppRoutes = () => (
     <Routes>
@@ -81,6 +82,26 @@ const AppRoutes = () => (
                 <PrivateRoute>
                     <AdminLayout>
                         <UserDetail />
+                    </AdminLayout>
+                </PrivateRoute>
+            } 
+        />
+        <Route 
+            path="/admin/inventories/*" 
+            element={
+                <PrivateRoute>
+                    <AdminLayout>
+                        <InventoryRoutes /> {/* Inventory routes */}
+                    </AdminLayout>
+                </PrivateRoute>
+            } 
+        />
+        <Route 
+            path="/admin/discounts/*" 
+            element={
+                <PrivateRoute>
+                    <AdminLayout>
+                        <DiscountRoutes /> {/* Discount routes */}
                     </AdminLayout>
                 </PrivateRoute>
             } 

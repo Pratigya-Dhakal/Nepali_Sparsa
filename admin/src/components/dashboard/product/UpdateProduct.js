@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import './styles/UpdateProduct.css';
 
 const UpdateProduct = () => {
-    const { productId } = useParams();
     const [product, setProduct] = useState({
         name: '',
         description: '',
@@ -11,21 +10,72 @@ const UpdateProduct = () => {
         sku: '',
         categoryId: '',
         subcategoryId: '',
+        inventoryId: '',
+        discountId: '',
         images: []
     });
 
+    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
+    const [inventoryOptions, setInventoryOptions] = useState([]);
+    const [discountOptions, setDiscountOptions] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchCategories = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/admin/products/${productId}`);
-                setProduct(response.data);
+                const response = await axios.get('http://localhost:5000/api/admin/categories');
+                setCategories(response.data);
             } catch (error) {
-                console.error('Error fetching product:', error);
+                console.error('Error fetching categories:', error);
             }
         };
 
-        fetchProduct();
-    }, [productId]);
+        fetchCategories();
+    }, []);
+
+    useEffect(() => {
+        const fetchSubcategories = async (categoryId) => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/admin/subcategories?categoryId=${categoryId}`);
+                setSubcategories(response.data);
+            } catch (error) {
+                console.error('Error fetching subcategories:', error);
+            }
+        };
+
+        if (selectedCategory) {
+            fetchSubcategories(selectedCategory);
+        } else {
+            setSubcategories([]);
+        }
+    }, [selectedCategory]);
+
+    useEffect(() => {
+        const fetchInventory = async () => {
+            try {
+                const response= await axios.get(`http://localhost:5000/api/admin/inventories`);
+                setInventoryOptions(response.data);
+            } catch (error) {
+                console.error('Error fetching inventory option:', error);
+            }
+        };
+
+        fetchInventory();
+    }, []);
+
+    useEffect(() => {
+        const fetchDiscountOptions = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/admin/discounts');
+                setDiscountOptions(response.data);
+            } catch (error) {
+                console.error('Error fetching discount options:', error);
+            }
+        };
+
+        fetchDiscountOptions();
+    }, []);
 
     const handleChange = (e) => {
         setProduct({
@@ -38,6 +88,15 @@ const UpdateProduct = () => {
         setProduct({
             ...product,
             images: e.target.files
+        });
+    };
+
+    const handleCategoryChange = (e) => {
+        setSelectedCategory(e.target.value);
+        setProduct({
+            ...product,
+            categoryId: e.target.value,
+            subcategoryId: '' // Reset subcategory when category changes
         });
     };
 
@@ -55,14 +114,23 @@ const UpdateProduct = () => {
         }
 
         try {
-            await axios.put(`http://localhost:5000/api/admin/products/${productId}`, formData, {
+            await axios.put(`http://localhost:5000/api/admin/products/${product.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             alert('Product updated successfully');
         } catch (error) {
-            console.error('Error updating product:', error);
+            console.error('Error updating product:', error.message);
+            if (error.response) {
+                console.error('Error details:', error.response.data);
+                console.error('Error status:', error.response.status);
+                console.error('Error headers:', error.response.headers);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('Error message:', error.message);
+            }
         }
     };
 
@@ -87,12 +155,48 @@ const UpdateProduct = () => {
                     <input type="text" name="sku" value={product.sku} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
-                    <label>Category ID</label>
-                    <input type="text" name="categoryId" value={product.categoryId} onChange={handleChange} required />
+                    <label>Category</label>
+                    <select name="categoryId" value={product.categoryId} onChange={handleCategoryChange} required>
+                        <option value="">Select a category</option>
+                        {categories.map(category => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form-group">
-                    <label>Subcategory ID</label>
-                    <input type="text" name="subcategoryId" value={product.subcategoryId} onChange={handleChange} required />
+                    <label>Subcategory</label>
+                    <select name="subcategoryId" value={product.subcategoryId} onChange={handleChange} required>
+                        <option value="">Select a subcategory</option>
+                        {subcategories.map(subcategory => (
+                            <option key={subcategory.id} value={subcategory.id}>
+                                {subcategory.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Inventory</label>
+                    <select name="inventoryId" value={product.inventoryId} onChange={handleChange}>
+                        <option value="">Select an inventory</option>
+                        {inventoryOptions.map(inventory => (
+                            <option key={inventory.id} value={inventory.id}>
+                                {inventory.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Discount</label>
+                    <select name="discountId" value={product.discountId} onChange={handleChange}>
+                        <option value="">Select a discount</option>
+                        {discountOptions.map(discount => (
+                            <option key={discount.id} value={discount.id}>
+                                {discount.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form-group">
                     <label>Images</label>

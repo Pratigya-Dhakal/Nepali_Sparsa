@@ -57,12 +57,12 @@ model Product {
   description       String
   price             Float
   sku               String
-  category          ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId        String          @db.ObjectId
-  subcategory       Subcategory     @relation(fields: [subcategoryId], references: [id])
-  subcategoryId     String          @db.ObjectId
-  inventory         ProductInventory @relation(fields: [inventoryId], references: [id])
-  inventoryId       String          @db.ObjectId
+  category          ProductCategory? @relation(fields: [categoryId], references: [id])
+  categoryId        String?          @db.ObjectId
+  subcategory       Subcategory?     @relation(fields: [subcategoryId], references: [id])
+  subcategoryId     String?          @db.ObjectId
+  inventory         ProductInventory?  @relation(fields: [inventoryId], references: [id])
+  inventoryId       String?          @db.ObjectId
   discount          Discount?       @relation(fields: [discountId], references: [id])
   discountId        String?         @db.ObjectId
   orderItems        OrderItem[]

@@ -43,12 +43,14 @@ const UserDetail = () => {
                 </div>
                 <div className="personal-info">
                     <h3>Personal Information</h3>
-                    <p><strong>First Name:</strong> {user.firstName}</p>
-                    <p><strong>Last Name:</strong> {user.lastName}</p>
-                    <p><strong>Email address:</strong> {user.email}</p>
-                    <p><strong>Phone:</strong> {user.phone || 'N/A'}</p>
-                    <p><strong>Role:</strong> {user.role}</p>
-                    <p><strong>Verified:</strong> {user.verify ? 'Yes' : 'No'}</p>
+                    <div className="personal-infos">
+                        <p><strong>First Name:</strong> {user.firstName}</p>
+                        <p><strong>Last Name:</strong> {user.lastName}</p>
+                        <p><strong>Email address:</strong> {user.email}</p>
+                        <p><strong>Phone:</strong> {user.phone || 'N/A'}</p>
+                        <p><strong>Role:</strong> {user.role}</p>
+                        <p><strong>Verified:</strong> {user.verify ? 'Yes' : 'No'}</p>
+                    </div>
                 </div>
                 <div className="address-section">
                     <h3>Address</h3>
