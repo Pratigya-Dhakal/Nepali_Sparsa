@@ -7,13 +7,13 @@ const Sidebar = () => {
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
-    const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+    // const [isInventoryOpen, setIsInventoryOpen] = useState(false);
     const [isDiscountOpen, setIsDiscountOpen] = useState(false);
 
     const toggleCategories = () => setIsCategoriesOpen(!isCategoriesOpen);
     const toggleSubcategories = () => setIsSubcategoriesOpen(!isSubcategoriesOpen);
     const toggleProducts = () => setIsProductsOpen(!isProductsOpen);
-    const toggleInventory = () => setIsInventoryOpen(!isInventoryOpen);
+    // const toggleInventory = () => setIsInventoryOpen(!isInventoryOpen);
     const toggleDiscount = () => setIsDiscountOpen(!isDiscountOpen);
 
     return (
@@ -22,55 +22,54 @@ const Sidebar = () => {
                 <h3>Nepali Sparsa.</h3>
             </div>
             <nav className="nav-links">
-                <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                <NavLink exact to="/admin/dashboard" activeClassName="active">Dashboard</NavLink>
                 <div>
-                    <button onClick={toggleCategories}>Categories</button>
+                    <button onClick={toggleCategories} className="nav-button">Categories</button>
                     {isCategoriesOpen && (
-                        <ul>
-                            <li><NavLink to="/admin/categories/all">All Categories</NavLink></li>
-                            <li><NavLink to="/admin/categories/add">Add Category</NavLink></li>
+                        <ul className="nav-submenu">
+                            <li><NavLink to="/admin/categories/all" activeClassName="active">All Categories</NavLink></li>
+                            <li><NavLink to="/admin/categories/add" activeClassName="active">Add Category</NavLink></li>
                         </ul>
                     )}
                 </div>
                 <div>
-                    <button onClick={toggleSubcategories}>Subcategories</button>
+                    <button onClick={toggleSubcategories} className="nav-button">Subcategories</button>
                     {isSubcategoriesOpen && (
-                        <ul>
-                            <li><NavLink to="/admin/subcategories/all">All Subcategories</NavLink></li>
-                            <li><NavLink to="/admin/subcategories/add">Add Subcategory</NavLink></li>
+                        <ul className="nav-submenu">
+                            <li><NavLink to="/admin/subcategories/all" activeClassName="active">All Subcategories</NavLink></li>
+                            <li><NavLink to="/admin/subcategories/add" activeClassName="active">Add Subcategory</NavLink></li>
                         </ul>
                     )}
                 </div>
                 <div>
-                    <button onClick={toggleProducts}>Products</button>
+                    <button onClick={toggleProducts} className="nav-button">Products</button>
                     {isProductsOpen && (
-                        <ul>
-                            <li><NavLink to="/admin/products/all">All Products</NavLink></li>
-                            <li><NavLink to="/admin/products/add">Add Product</NavLink></li>
+                        <ul className="nav-submenu">
+                            <li><NavLink to="/admin/products/all" activeClassName="active">All Products</NavLink></li>
+                            <li><NavLink to="/admin/products/add" activeClassName="active">Add Product</NavLink></li>
                         </ul>
                     )}
                 </div>
-                <div>
-                    <button onClick={toggleInventory}>Inventory</button>
+                {/* <div>
+                    <button onClick={toggleInventory} className="nav-button">Inventory</button>
                     {isInventoryOpen && (
-                        <ul>
-                            <li><NavLink to="/admin/inventories">All Inventory</NavLink></li>
-                            <li><NavLink to="/admin/inventories/add">Add Inventory</NavLink></li>
+                        <ul className="nav-submenu">
+                            <li><NavLink to="/admin/inventories" activeClassName="active">All Inventory</NavLink></li>
+                            <li><NavLink to="/admin/inventories/add" activeClassName="active">Add Inventory</NavLink></li>
                         </ul>
                     )}
-                </div>
+                </div> */}
                 <div>
-                    <button onClick={toggleDiscount}>Discounts</button>
+                    <button onClick={toggleDiscount} className="nav-button">Discounts</button>
                     {isDiscountOpen && (
-                        <ul>
-                            <li><NavLink to="/admin/discounts/all">All Discounts</NavLink></li>
-                            <li><NavLink to="/admin/discounts/add">Add Discount</NavLink></li>
+                        <ul className="nav-submenu">
+                            <li><NavLink to="/admin/discounts/all" activeClassName="active">All Discounts</NavLink></li>
+                            <li><NavLink to="/admin/discounts/add" activeClassName="active">Add Discount</NavLink></li>
                         </ul>
                     )}
                 </div>
-                <NavLink to="/admin/users">Users</NavLink>
-                <NavLink to="/admin/comments">Comments</NavLink>
-                <NavLink to="/admin/orders">Orders</NavLink>
+                <NavLink to="/admin/users" activeClassName="active">Users</NavLink>
+                <NavLink to="/admin/orders" activeClassName="active">Orders</NavLink>
                 <Logout />
             </nav>
         </div>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import './styles/UpdateProduct.css';
 
 const UpdateProduct = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState({
         name: '',
         description: '',
@@ -10,18 +13,28 @@ const UpdateProduct = () => {
         sku: '',
         categoryId: '',
         subcategoryId: '',
-        inventoryId: '',
         discountId: '',
-        images: []
+        images: [],
+        quantity: ''
     });
 
     const [categories, setCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
-    const [inventoryOptions, setInventoryOptions] = useState([]);
     const [discountOptions, setDiscountOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [error, setError] = useState('');
 
     useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/admin/products/${id}`);
+                setProduct(response.data);
+                setSelectedCategory(response.data.categoryId);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+            }
+        };
+
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/admin/categories');
@@ -31,8 +44,9 @@ const UpdateProduct = () => {
             }
         };
 
+        fetchProduct();
         fetchCategories();
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         const fetchSubcategories = async (categoryId) => {
@@ -50,19 +64,6 @@ const UpdateProduct = () => {
             setSubcategories([]);
         }
     }, [selectedCategory]);
-
-    useEffect(() => {
-        const fetchInventory = async () => {
-            try {
-                const response= await axios.get(`http://localhost:5000/api/admin/inventories`);
-                setInventoryOptions(response.data);
-            } catch (error) {
-                console.error('Error fetching inventory option:', error);
-            }
-        };
-
-        fetchInventory();
-    }, []);
 
     useEffect(() => {
         const fetchDiscountOptions = async () => {
@@ -114,22 +115,17 @@ const UpdateProduct = () => {
         }
 
         try {
-            await axios.put(`http://localhost:5000/api/admin/products/${product.id}`, formData, {
+            await axios.put(`http://localhost:5000/api/admin/products/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             alert('Product updated successfully');
+            navigate('/products'); // Replace with the correct path
         } catch (error) {
             console.error('Error updating product:', error.message);
             if (error.response) {
-                console.error('Error details:', error.response.data);
-                console.error('Error status:', error.response.status);
-                console.error('Error headers:', error.response.headers);
-            } else if (error.request) {
-                console.error('Error request:', error.request);
-            } else {
-                console.error('Error message:', error.message);
+                setError(error.response.data.message);
             }
         }
     };
@@ -137,6 +133,7 @@ const UpdateProduct = () => {
     return (
         <div className="update-product">
             <h2>Update Product</h2>
+            {error && <p className="error-message">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Name</label>
@@ -177,15 +174,8 @@ const UpdateProduct = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label>Inventory</label>
-                    <select name="inventoryId" value={product.inventoryId} onChange={handleChange}>
-                        <option value="">Select an inventory</option>
-                        {inventoryOptions.map(inventory => (
-                            <option key={inventory.id} value={inventory.id}>
-                                {inventory.name}
-                            </option>
-                        ))}
-                    </select>
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" value={product.quantity} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                     <label>Discount</label>

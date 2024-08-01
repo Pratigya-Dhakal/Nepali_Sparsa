@@ -10,8 +10,9 @@ import OrderList from '../components/dashboard/order/OrderList';
 import AllUsers from '../components/dashboard/AllUsers';
 import PrivateRoute from './PrivateRoute';
 import UserDetail from '../components/dashboard/UserDetail';
-import InventoryRoutes from './InventoryRoutes'; // Import InventoryRoutes
-import DiscountRoutes from './DiscountRoutes'; // Import DiscountRoutes
+import InventoryRoutes from './InventoryRoutes';
+import DiscountRoutes from './DiscountRoutes';
+import CommentsRoutes from './CommentsRoutes'; // Import CommentsRoutes
 
 const AppRoutes = () => (
     <Routes>
@@ -102,6 +103,16 @@ const AppRoutes = () => (
                 <PrivateRoute>
                     <AdminLayout>
                         <DiscountRoutes /> {/* Discount routes */}
+                    </AdminLayout>
+                </PrivateRoute>
+            } 
+        />
+        <Route 
+            path="/admin/comments/*" 
+            element={
+                <PrivateRoute>
+                    <AdminLayout>
+                        <CommentsRoutes /> {/* Comments routes */}
                     </AdminLayout>
                 </PrivateRoute>
             } 

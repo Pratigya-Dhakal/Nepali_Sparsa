@@ -6,24 +6,58 @@ import './styles/ViewProduct.css'; // Import the CSS file for styling
 const ViewProduct = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [replyContent, setReplyContent] = useState('');
+    const [commentIdToReply, setCommentIdToReply] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); // Added error state
 
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProductAndComments = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/admin/products/${id}`);
-                setProduct(data);
+                // Fetch product details
+                const { data: productData } = await axios.get(`http://localhost:5000/api/admin/products/${id}`);
+                setProduct(productData);
+
+                // Fetch comments for the product
+                const { data: commentsData } = await axios.get(`http://localhost:5000/api/admin/comments/${id}`);
+                setComments(commentsData);
+
             } catch (error) {
-                console.error('Error fetching product:', error);
-                setError('Failed to fetch product. Please try again later.'); // Set error message
+                console.error('Error fetching product or comments:', error);
+                setError('Failed to fetch product or comments. Please try again later.'); // Set error message
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProduct();
+        fetchProductAndComments();
     }, [id]);
+
+    const handleReplyChange = (e) => {
+        setReplyContent(e.target.value);
+    };
+
+    const handleReplySubmit = async (commentId) => {
+        try {
+            const adminId = 1; // Replace with actual admin ID
+            await axios.post('http://localhost:5000/api/admin/replies', {
+                commentId,
+                userId: adminId,
+                content: replyContent
+            });
+
+            setReplyContent('');
+            setCommentIdToReply(null);
+
+            // Fetch updated comments after replying
+            const { data: updatedComments } = await axios.get(`http://localhost:5000/api/comments/${id}`);
+            setComments(updatedComments);
+        } catch (error) {
+            setError(error.message || 'Error adding reply');
+            console.error('Error adding reply:', error);
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>; // Display error message
@@ -57,6 +91,32 @@ const ViewProduct = () => {
                 {product.discount && (
                     <p className="product-discount">Discount: {product.discount.discountPercent}%</p>
                 )}
+            </div>
+
+            <div className="comments-section">
+                <h2>Comments</h2>
+                {comments.length === 0 && <p>No comments available.</p>}
+                {comments.map((comment) => (
+                    <div key={comment.id} className="comment">
+                        <p><strong>{comment.user?.username}:</strong> {comment.content}</p>
+                        <div className="replies">
+                            {comment.replies && comment.replies.map((reply) => (
+                                <p key={reply.id}><strong>{reply.user?.username} (Admin):</strong> {reply.content}</p>
+                            ))}
+                        </div>
+                        <button onClick={() => setCommentIdToReply(comment.id)}>Reply as Admin</button>
+                        {commentIdToReply === comment.id && (
+                            <div className="reply-form">
+                                <textarea
+                                    value={replyContent}
+                                    onChange={handleReplyChange}
+                                    placeholder="Write a reply..."
+                                ></textarea>
+                                <button onClick={() => handleReplySubmit(comment.id)}>Submit Reply</button>
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );

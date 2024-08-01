@@ -692,3 +692,19 @@ export const getSubcategoriesByCategoryId = async (req, res) => {
     }
 };
 
+export const getSubcategoriesByID = async (req, res) => {
+    const { subcategoryId } = req.params;
+    try {
+        const subcategory = await prisma.subcategory.findUnique({
+            where: { id: subcategoryId },
+        });
+
+        if (!subcategory) {
+            return res.status(404).json({ message: 'Subcategory not found' });
+        }
+
+        res.json(subcategory);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};

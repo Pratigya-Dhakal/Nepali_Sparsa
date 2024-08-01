@@ -17,7 +17,7 @@ const AddProduct = () => {
     
     const [categories, setCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
-    const [inventoryOptions, setInventoryOptions] = useState([]);
+    // const [inventoryOptions, setInventoryOptions] = useState([]);
     const [discountOptions, setDiscountOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -51,18 +51,18 @@ const AddProduct = () => {
         }
     }, [selectedCategory]);
 
-    useEffect(() => {
-        const fetchInventory = async () => {
-            try {
-                const response= await axios.get(`http://localhost:5000/api/admin/inventories`);
-                setInventoryOptions(response.data);
-            } catch (error) {
-                console.error('Error fetching inventory details:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchInventory = async () => {
+    //         try {
+    //             const response= await axios.get(`http://localhost:5000/api/admin/inventories`);
+    //             setInventoryOptions(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching inventory details:', error);
+    //         }
+    //     };
 
-        fetchInventory();
-    }, []);
+    //     fetchInventory();
+    // }, []);
 
     useEffect(() => {
         const fetchDiscountOptions = async () => {
@@ -181,15 +181,8 @@ const AddProduct = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label>Inventory</label>
-                    <select name="inventoryId" value={product.inventoryId} onChange={handleChange}>
-                        <option value="">Select an inventory</option>
-                        {inventoryOptions.map(inventory => (
-                            <option key={inventory.id} value={inventory.id}>
-                                {inventory.quantity}
-                            </option>
-                        ))}
-                    </select>
+                    <label>Quantity</label>
+                    <input type="number" name="price" value={product.quantity} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                     <label>Discount</label>

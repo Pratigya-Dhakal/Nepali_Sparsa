@@ -8,7 +8,7 @@ const UpdateCategory = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState('');
     const [error, setError] = useState('');
 
     useEffect(() => {

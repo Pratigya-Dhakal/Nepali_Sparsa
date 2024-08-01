@@ -8,16 +8,13 @@ import {
     getAllUsers,
     getUserById,
     deleteUserById,
-    searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById
+    searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById,getSubcategoriesByID
 } from '../controllers/adminController.js';
-import {
-    createInventory, getAllInventories, getInventoryById, updateInventory, deleteInventory
-} from '../controllers/productInventoryController.js';
 import {
     createDiscount, getAllDiscounts, getDiscountById, updateDiscount, deleteDiscount
 } from '../controllers/discountController.js';
 import upload from '../middlewares/upload.js';
-
+import { addComment, getComments, addReply, getReplies, updateComment, deleteComment, updateReply, deleteReply } from '../controllers/commentController.js';
 const router = express.Router();
 
 // Admin Signup and Login routes
@@ -39,6 +36,7 @@ router.post('/subcategories', addSubcategory);
 router.put('/subcategories/:subcategoryId', updateSubcategory);
 router.delete('/subcategories/:subcategoryId', deleteSubcategory);
 router.get('/subcategoriesByCategory', getSubcategoriesByCategoryId);
+router.get('/subcategories/:subcategoryId', getSubcategoriesByID);
 
 // Product routes
 router.get('/products', getAllProducts);
@@ -57,12 +55,6 @@ router.get('/users/detail/:id',getUserDetailById )
 router.delete('/users/:id',deleteUserById)
 router.get('/users/:name',searchUserByName)
 
-// Inventory routes
-router.post('/inventories', createInventory);
-router.get('/inventories', getAllInventories);
-router.get('/inventories/:id', getInventoryById);
-router.put('/inventories/:id', updateInventory);
-router.delete('/inventories/:id', deleteInventory);
 
 // Discount routes
 router.post('/discounts', createDiscount);
@@ -70,5 +62,15 @@ router.get('/discounts', getAllDiscounts);
 router.get('/discounts/:id', getDiscountById);
 router.put('/discounts/:id', updateDiscount);
 router.delete('/discounts/:id', deleteDiscount);
+
+router.post('/comments', addComment);
+router.get('/comments/:productId', getComments);
+router.put('/comments/:id', updateComment);
+router.delete('/comments/:id', deleteComment);
+
+router.post('/replies', addReply);
+router.get('/replies/:commentId', getReplies);
+router.put('/replies/:id', updateReply);
+router.delete('/replies/:id', deleteReply);
 
 export default router;
