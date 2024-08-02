@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faInfoCircle , faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import './styles/ProductCard.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    const handleNextImage = () => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        appendArrows: '.slick-custom-arrows',
     };
+    const navigate = useNavigate();
 
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.images.length) % product.images.length);
-    };
+
+    const handleSeeMore = () => {
+        navigate(`/products/${product.id}`);
+    }
 
     return (
         <div className="product-card">
             <div className="image-slider">
-                <button className="prev-button" onClick={handlePrevImage}>
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                </button>
-                <img src={product.images[currentImageIndex]} alt={product.name} />
-                <button className="next-button" onClick={handleNextImage}>
-                    <FontAwesomeIcon icon={faChevronRight} />
-                </button>
+                <Slider {...settings}>
+                    {product.images.map((image, index) => (
+                        <div key={index} className="slider-image">
+                            <img 
+                                src={`http://localhost:5000/uploads/${image.url}`} 
+                                alt={product.name} 
+                                onError={() => console.error(`Image failed to load: http://localhost:5000/uploads/${image.url}`)}
+                            />
+                        </div>
+                    ))}
+                </Slider>
+                <div className="slick-custom-arrows" />
             </div>
             <div className="product-details">
                 <h2>{product.name}</h2>
@@ -34,7 +47,7 @@ const ProductCard = ({ product }) => {
                         <FontAwesomeIcon icon={faShoppingCart} />
                         <span>Add to Cart</span>
                     </button>
-                    <button className="see-more">
+                    <button className="see-more" onClick={handleSeeMore}>
                         <FontAwesomeIcon icon={faInfoCircle} />
                         <span>See More</span>
                     </button>
