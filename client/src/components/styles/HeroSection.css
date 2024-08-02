@@ -1,49 +1,95 @@
+/* HeroSection.css */
+
 .hero-section {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 40px 80px;
-    background-color: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 90vh;
 }
 
 .hero-content {
-    max-width: 50%;
+    width: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(241, 241, 241, 0.7); /* Light grey with transparency */
+    backdrop-filter: blur(10px); /* Optional: adds a blur effect to the background */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .hero-title {
-    font-size: 36px;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 2em;
+    margin-bottom: 10px;
 }
 
 .hero-description {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 30px;
+    font-size: 1.2em;
+    margin-bottom: 20px;
 }
 
 .hero-button {
-    padding: 10px 20px;
+    padding: 10px 16px; /* Adjusted for smaller size */
+    font-size: 1em; /* Adjusted for smaller size */
     background-color: #a70072;
-    color: #fff;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    align-items: center;
 }
 
-.hero-button:hover {
-    background-color: #830b5d;
-}
-
-.hero-image {
-    display: flex;
-    justify-content: flex-end; 
+.hero-carousel {
     width: 50%;
+    background: rgba(241, 241, 241, 0.7);
+    backdrop-filter: blur(10px);
 }
 
-.hero-image img {
-    max-width: 100%;
-    height: auto;
-    margin-left: 20px; 
+.hero-carousel .carousel .control-arrow {
+    background-color: rgb(245, 242, 242);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.hero-carousel .carousel .control-prev.control-arrow {
+    left: 10px;
+}
+
+.hero-carousel .carousel .control-next.control-arrow {
+    right: 10px;
+}
+
+.hero-carousel .carousel .control-prev.control-arrow::before,
+.hero-carousel .carousel .control-next.control-arrow::before {
+    font-size: 2em;
+    color: black;
+}
+
+/* Hide the play icon */
+.hero-carousel .carousel .play-icon {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        flex-direction: column;
+        height: auto; /* Adjust height for mobile */
+    }
+
+    .hero-content {
+        width: 100%;
+        text-align: center;
+        position: relative; /* Adjusted for stacking on mobile */
+    }
+
+    .hero-carousel {
+        width: 100%;
+    }
+
+    .hero-carousel .carousel .control-arrow {
+        display: none; /* Hide arrows on mobile for simplicity */
+    }
 }

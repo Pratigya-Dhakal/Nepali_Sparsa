@@ -57,11 +57,12 @@ model Product {
   description       String
   price             Float
   sku               String
+  size              String?         // Make this field nullable
   category          ProductCategory? @relation(fields: [categoryId], references: [id])
   categoryId        String?          @db.ObjectId
   subcategory       Subcategory?     @relation(fields: [subcategoryId], references: [id])
   subcategoryId     String?          @db.ObjectId
-  quantity          Int
+  quantity          Int?             // Nullable
   discount          Discount?       @relation(fields: [discountId], references: [id])
   discountId        String?         @db.ObjectId
   orderItems        OrderItem[]
@@ -71,6 +72,8 @@ model Product {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 }
+
+
 
 model ProductCategory {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
@@ -197,4 +200,15 @@ model RefreshToken {
   userId    String   @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model Deal {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  category    String
+  discount    String
+  image       String
+  title       String
+  newPrice    String
+  oldPrice    String
+  rating      Float
+  description String
 }

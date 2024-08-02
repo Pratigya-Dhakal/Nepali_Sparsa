@@ -1,0 +1,19 @@
+.search-results-page {
+    padding: 20px;
+}
+
+.search-error {
+    color: red;
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-card {
+    width: 300px;
+    margin: 10px;
+}
