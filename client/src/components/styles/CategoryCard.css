@@ -1,0 +1,30 @@
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;  /* Adjust width as needed */
+    height: 200px; /* Adjust height as needed */
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.category-image {
+    width: 100%;
+    height: 120px; /* Fixed height for the image */
+    object-fit: cover;
+}
+
+.category-name {
+    margin: 5px 0;
+    font-size: 14px; /* Adjust font size as needed */
+    font-weight: bold;
+}
