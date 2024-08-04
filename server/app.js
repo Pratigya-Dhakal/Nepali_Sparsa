@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import productRoutes from './src/routes/productRoutes.js';
+import reviewRoutes from './src/routes/reviewRoutes.js';
 
 // Initialize dotenv
 dotenv.config();
@@ -25,7 +26,8 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // API routes
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api', productRoutes);  // Ensure routes are correctly defined
+app.use('/api', productRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

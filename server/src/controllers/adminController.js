@@ -175,7 +175,7 @@ export const updateCategory = async (req, res) => {
 };
 
 export const addProduct = async (req, res) => {
-    const { name, description, price, sku, categoryId, subcategoryId, inventoryId, discountId } = req.body;
+    const { name, description, price, sku, categoryId, subcategoryId, discountId, quantity } = req.body;
     const images = req.files;
 
     try {
@@ -188,13 +188,12 @@ export const addProduct = async (req, res) => {
             category: { connect: { id: categoryId } },
             subcategory: subcategoryId ? { connect: { id: subcategoryId } } : undefined,
             discount: discountId ? { connect: { id: discountId } } : undefined,
+            quantity: quantity ? parseInt(quantity) : undefined,
             images: images && images.length > 0 ? {
                 create: images.map(file => ({
                     url: `/uploads/${file.filename}`
                 }))
-            } : undefined,
-            // Include inventory only if inventoryId is provided
-            inventory: inventoryId ? { connect: { id: inventoryId } } : undefined
+            } : undefined
         };
 
         // Remove undefined fields from productData
@@ -207,13 +206,14 @@ export const addProduct = async (req, res) => {
         // Create the product with the cleaned productData object
         const product = await prisma.product.create({
             data: productData,
-            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+            include: { images: true, category: true, subcategory: true, discount: true }
         });
 
         res.status(201).json(product);
     } catch (error) {
-        console.error('Error creating product:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error creating product:', error.message); // Log error message
+        console.error('Error stack trace:', error.stack); // Log stack trace for more details
+        res.status(500).json({ message: 'Server error', error: error.message }); // Include error message in response
     }
 };
 
@@ -306,12 +306,28 @@ export const deleteProduct = async (req, res) => {
 export const deleteCategory = async (req, res) => {
     const { categoryId } = req.params;
     try {
-        await prisma.productCategory.delete({ where: { id: categoryId } });
+      // Delete the associated CategoryImage first
+        await prisma.categoryImage.deleteMany({
+            where: {
+            categoryId,
+            },
+        });
+    
+        // Then delete the ProductCategory
+        await prisma.productCategory.delete({
+            where: {
+            id: categoryId,
+            },
+        });
+    
         res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-    }
-};
+        } catch (error) {
+        console.error('Error deleting category:', error.message);
+        res.status(500).json({ message: 'Server error', error: error.message });
+        }
+    };
+    
+
 
 export const getAllProducts = async (req, res) => {
     // Extract query parameters
@@ -683,14 +699,16 @@ export const getSubcategoriesByCategoryId = async (req, res) => {
 
     try {
         const subcategories = await prisma.subcategory.findMany({
-            where: { parentCategoryId: categoryId },
+            where: { parentCategoryId: categoryId }
         });
+
         res.json(subcategories);
     } catch (error) {
-        console.error('Error fetching subcategories:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error fetching subcategories by category ID:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
 
 export const getSubcategoriesByID = async (req, res) => {
     const { subcategoryId } = req.params;

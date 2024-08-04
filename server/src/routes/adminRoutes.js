@@ -30,6 +30,7 @@ router.put('/categories/:categoryId', upload.single('image'), updateCategory);
 router.delete('/categories/:categoryId', deleteCategory);
 router.get('/categories/:id', getCategoryById);
 
+
 // Subcategory routes
 router.get('/subcategories', getAllSubcategories);
 router.post('/subcategories', addSubcategory);

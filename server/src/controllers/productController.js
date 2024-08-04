@@ -5,20 +5,28 @@ const prisma = new PrismaClient();
 
 // Get all products with optional filters
 export const getAllProducts = async (req, res) => {
+    const { page = 0, limit = 20 } = req.query; // Default to page 0 and limit 20 if not provided
+
     try {
         const products = await prisma.product.findMany({
+            skip: page * limit,
+            take: parseInt(limit),
             include: {
-            images: true,
-            category: true,
-            subcategory: true,
-            discount: true,
-            orderItems: true,
-            cartItems: true,
-            comments: true,
+                images: true,
+                category: true,
+                subcategory: true,
+                discount: true,
+                orderItems: true,
+                cartItems: true,
+                comments: true,
             }
         });
-        res.json(products);
-        } catch (error) {
+
+        // Fetch total count of products for pagination info
+        const totalCount = await prisma.product.count();
+
+        res.json({ products, totalCount });
+    } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }

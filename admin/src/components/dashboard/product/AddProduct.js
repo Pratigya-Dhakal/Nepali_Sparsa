@@ -126,8 +126,17 @@ const AddProduct = () => {
                 console.error('Error details:', error.response.data);
                 console.error('Error status:', error.response.status);
                 console.error('Error headers:', error.response.headers);
-                if (error.response.data.includes('File too large')) {
-                    alert('File size exceeds the limit of 5MB');
+    
+                // Display the complete error object
+                console.error('Complete error object:', error);
+                
+                // Handle specific error scenarios if known
+                if (error.response.data && typeof error.response.data === 'string') {
+                    if (error.response.data.includes('File too large')) {
+                        alert('File size exceeds the limit of 5MB');
+                    }
+                } else {
+                    alert('An unexpected error occurred. Please try again.');
                 }
             } else if (error.request) {
                 console.error('Error request:', error.request);

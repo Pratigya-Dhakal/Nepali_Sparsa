@@ -9,6 +9,7 @@ import AboutUs from '../pages/AboutUsPage';
 import ContactUsPage from '../pages/ContactUsPage';
 import SearchResults from '../pages/SearchResults';
 import ProductDetail from '../pages/ProductDetail';
+import FaqPage from '../pages/FaqPage'; // Add this line    
 
 const AppRoutes = () => {
     return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
             <Route path="/signUp" element={<SignUpPage />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUsPage />} />
+            <Route path="/faq" element={< FaqPage/>} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/products/:id" element={<ProductDetail/>} />
             

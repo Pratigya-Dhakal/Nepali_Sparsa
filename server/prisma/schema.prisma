@@ -16,6 +16,13 @@ enum Verify {
   VERIFIED
   NOTVERIFIED
 }
+// Enum for different deal types
+enum DealType {
+  HOT
+  FEATURED
+  ON_SALE
+}
+
 
 model User {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
@@ -33,6 +40,7 @@ model User {
   comments      Comment[]
   replies       Reply[]
   refreshTokens RefreshToken[]
+  reviews       Review[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -69,25 +77,35 @@ model Product {
   cartItems         CartItem[]
   images            ProductImage[]
   comments          Comment[]
+  reviews           Review[]
+  deals             Deal[]      
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 }
 
-
-
 model ProductCategory {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  description     String?
-  parent          ProductCategory?  @relation("CategoryToSubcategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  parentId        String? @db.ObjectId
-  subcategories   ProductCategory[] @relation("CategoryToSubcategory")
-  subSubcategories Subcategory[]    @relation("ProductCategoryToSubcategory")
-  products        Product[]
-  image           CategoryImage?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String?
+  parent            ProductCategory?  @relation("CategoryToSubcategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId          String? @db.ObjectId
+  subcategories     ProductCategory[] @relation("CategoryToSubcategory")
+  subSubcategories  Subcategory[]     @relation("ProductCategoryToSubcategory")
+  products          Product[]
+  image             CategoryImage?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }
+
+model CategoryImage {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  url               String
+  category          ProductCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId        String            @unique @db.ObjectId
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
 
 model Subcategory {
   id             String            @id @default(auto()) @map("_id") @db.ObjectId
@@ -109,15 +127,6 @@ model ProductImage {
   updatedAt DateTime @updatedAt
 }
 
-model CategoryImage {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
-  url       String
-  category  ProductCategory   @relation(fields: [categoryId], references: [id])
-  categoryId String           @unique @db.ObjectId
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-}
-
 model Discount {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -126,7 +135,7 @@ model Discount {
   active        Boolean   @default(true)
   products      Product[]
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  updatedAt     DateTime  @default(now())
 }
 
 model Order {
@@ -193,6 +202,19 @@ model Reply {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
+
+model Review {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Float
+  comment   String
+  product   Product    @relation(fields: [productId], references: [id])
+  productId String     @db.ObjectId
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @db.ObjectId
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
 model RefreshToken {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   token     String   @unique
@@ -201,14 +223,21 @@ model RefreshToken {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Deal {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  type        DealType    // Enum field to define deal types
   category    String
   discount    String
   image       String
   title       String
-  newPrice    String
-  oldPrice    String
+  newPrice    Float       // Changed to Float for numerical operations
+  oldPrice    Float       // Changed to Float for numerical operations
   rating      Float
   description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  product     Product?    @relation(fields: [productId], references: [id])
+  productId   String?     @db.ObjectId
 }
+

@@ -1,85 +1,75 @@
 .product-card {
     border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
-    margin: 16px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    background-color: #fff;
 }
 
 .image-slider {
     position: relative;
     width: 100%;
+    height: 300px; /* Adjust as needed */
 }
 
-.slider-image img {
+.swiper {
     width: 100%;
-    height: 200px;
+    height: 100%;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-.slick-custom-arrows .slick-prev,
-.slick-custom-arrows .slick-next {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border-radius: 50%;
-    padding: 10px;
-}
-
-.slick-custom-arrows .slick-prev {
-    left: 10px;
-}
-
-.slick-custom-arrows .slick-next {
-    right: 10px;
-}
-
 .product-details {
-    padding: 16px;
-}
-
-.product-details h2 {
-    margin: 0 0 8px;
-    font-size: 1.25rem;
-}
-
-.product-details p {
-    margin: 0 0 16px;
-    font-size: 1rem;
-    color: #666;
+    padding: 16px 0;
 }
 
 .product-price {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 16px;
+    font-size: 1.5rem;
+    color: #333;
+    margin: 8px 0;
 }
 
 .product-actions {
     display: flex;
     justify-content: space-between;
+    margin-top: 16px;
 }
 
-.add-to-cart,
-.see-more {
-    background-color: #a70072;
-    color: white;
+.product-actions button {
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 4px;
-    text-decoration: none;
     display: flex;
     align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart {
+    background-color: #d89bc5;
+    color: white;
     width: fit-content;
 }
 
-.add-to-cart svg,
-.see-more svg {
-    margin-right: 8px;
+.add-to-cart:hover {
+    background-color: #b87daa;
 }
 
-.add-to-cart:hover,
+.see-more {
+    width: fit-content;
+    background-color: #9cddde;
+    color: white;
+}
+
 .see-more:hover {
-    background-color: #a80072;
+    background-color: #4f8499;
+}
+
+.product-actions button .fa-shopping-cart,
+.product-actions button .fa-info-circle {
+    margin-right: 8px;
 }
