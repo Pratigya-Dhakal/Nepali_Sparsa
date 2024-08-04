@@ -146,8 +146,13 @@
     text-decoration: none;
     padding: 10px;
     display: block;
+
 }
 
+.menu a:hover {
+    text-decoration: underline;
+    color: #a70072;
+}
 .navbar-bottom.open {
     display: flex;
 }
@@ -246,4 +251,74 @@
     .navbar-top {
         display: none; /* Hide the navbar top on mobile */
     }
+}
+/* Navbar.css */
+
+/* Other existing styles remain unchanged */
+
+.menu-item {
+    position: relative; /* Ensure the submenu positions correctly relative to the menu item */
+}
+
+.subcategory-card {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 300px; /* Adjust width as necessary */
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow for floating effect */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding for spacing inside the card */
+    z-index: 1000; /* Ensure the card is on top of other elements */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns layout */
+    gap: 3px; /* Space between items */
+    transform: translateY(10px); /* Slightly move the card down for a floating effect */
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+     /* Smooth transition */
+}
+
+.menu-item:hover .subcategory-card {
+    opacity: 1; /* Make the card visible on hover */
+    visibility: visible; /* Ensure the card is visible */
+    transform: translateY(0); /* Lift the card on hover */
+}
+
+.subcategory-card h4 {
+    grid-column: span 3; /* Make header span all columns */
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center; /* Center-align the header text */
+}
+
+.subcategory-card ul {
+    list-style-type: none;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    display: contents; /* Make the list items use the grid layout */
+}
+
+.subcategory-card li {
+    display: flex;
+    text-decoration: none;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+}
+
+.subcategory-card a {
+    text-decoration: none;
+    color: black;
+    display: block; /* Ensure links take up full width for padding */
+    padding: 10px; /* Padding around links */
+    transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition */
+}
+
+.subcategory-card a:hover {
+    text-decoration: none;
+    color: #a70072; /* Optional: Change color on hover for better visibility */
 }

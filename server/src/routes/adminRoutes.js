@@ -8,7 +8,7 @@ import {
     getAllUsers,
     getUserById,
     deleteUserById,
-    searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById,getSubcategoriesByID
+    searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById,getSubcategoriesByID,getSubcategoriesByParentCategoryName
 } from '../controllers/adminController.js';
 import {
     createDiscount, getAllDiscounts, getDiscountById, updateDiscount, deleteDiscount
@@ -29,6 +29,7 @@ router.post('/categories', upload.single('image'), addCategory);
 router.put('/categories/:categoryId', upload.single('image'), updateCategory);
 router.delete('/categories/:categoryId', deleteCategory);
 router.get('/categories/:id', getCategoryById);
+router.get('/subcategories/:parentCategoryName', getSubcategoriesByParentCategoryName);
 
 
 // Subcategory routes

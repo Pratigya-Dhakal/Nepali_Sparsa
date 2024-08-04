@@ -7,9 +7,10 @@ import './styles/Navbar.css';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initialize based on current width
     const [searchTerm, setSearchTerm] = useState('');
-    const [subcategories, setSubcategories] = useState({});
+    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
     const navigate = useNavigate();
 
@@ -20,6 +21,24 @@ const Navbar = () => {
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        // Fetch categories when the component mounts
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/categories');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
     }, []);
 
     const toggleMenu = () => setIsOpen(prevState => !prevState);
@@ -33,31 +52,29 @@ const Navbar = () => {
         }
     };
 
-    const fetchSubcategories = async (category) => {
+    const fetchSubcategories = async (categoryName) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/subcategories?category=${category}`);
+            const response = await fetch(`http://localhost:5000/api/admin/subcategories/${categoryName}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setSubcategories(prevState => ({ ...prevState, [category]: data }));
+            setSubcategories(data);
         } catch (error) {
             console.error('Error fetching subcategories:', error);
         }
     };
+    
 
     const handleMouseEnter = (category) => {
         setHoveredCategory(category);
-        if (!subcategories[category]) {
-            fetchSubcategories(category);
-        }
+        fetchSubcategories(category);
     };
 
     const handleMouseLeave = () => {
         setHoveredCategory(null);
+        setSubcategories([]);
     };
-
-    const categories = ['Men', 'Women', 'Kids', 'Jewelry', 'Handicraft'];
 
     return (
         <>
@@ -115,24 +132,23 @@ const Navbar = () => {
                 {!isMobile && (
                     <div className="menu">
                         <Link to="/" aria-label="Home">Home</Link>
-                        <Link to="/categories" aria-label="Categories">Categories</Link>
                         {categories.map(category => (
                             <div
-                                key={category}
+                                key={category.name}
                                 className="menu-item"
-                                onMouseEnter={() => handleMouseEnter(category)}
+                                onMouseEnter={() => handleMouseEnter(category.name)}
                                 onMouseLeave={handleMouseLeave}
                             >
-                                <Link to={`/${category.toLowerCase()}`} aria-label={`${category} Products`}>
-                                    {category}
+                                <Link to={`/${category.name.toLowerCase()}`} aria-label={`${category.name} Products`}>
+                                    {category.name}
                                 </Link>
-                                {hoveredCategory === category && (
+                                {hoveredCategory === category.name && (
                                     <div className="subcategory-card">
-                                        <h4>{category} Subcategories</h4>
+                                        <h4>{category.name}'s Subcategories</h4>
                                         <ul>
-                                            {subcategories[category] && subcategories[category].map(subcategory => (
+                                            {subcategories.map(subcategory => (
                                                 <li key={subcategory.id}>
-                                                    <Link to={`/${category.toLowerCase()}/${subcategory.id}`} aria-label={subcategory.name}>
+                                                    <Link to={`/${category.name.toLowerCase()}/${subcategory.id}`} aria-label={subcategory.name}>
                                                         {subcategory.name}
                                                     </Link>
                                                 </li>
@@ -177,8 +193,8 @@ const Navbar = () => {
                     <Link to="/" onClick={closeMenu} aria-label="Home">Home</Link>
                     <Link to="/categories" onClick={closeMenu} aria-label="Categories">Categories</Link>
                     {categories.map(category => (
-                        <Link key={category} to={`/${category.toLowerCase()}`} onClick={closeMenu} aria-label={`${category} Products`}>
-                            {category}
+                        <Link key={category.name} to={`/${category.name.toLowerCase()}`} onClick={closeMenu} aria-label={`${category.name} Products`}>
+                            {category.name}
                         </Link>
                     ))}
                     <Link to="/about-us" onClick={closeMenu} aria-label="About Us">About Us</Link>

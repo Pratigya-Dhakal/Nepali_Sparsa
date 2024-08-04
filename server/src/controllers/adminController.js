@@ -117,13 +117,52 @@ export const resendVerificationEmail = async (req, res) => {
 export const getAllCategories = async (req, res) => {
     try {
         const categories = await prisma.productCategory.findMany({
-            include: { subcategories: true, image: true },
+            include: {
+                subcategories: true,
+                image: true,
+            },
         });
-        res.json(categories);
+
+        // Format image URLs to use forward slashes
+        const formattedCategories = categories.map(category => ({
+            ...category,
+            image: category.image ? {
+                ...category.image,
+                url: category.image.url.replace(/\\/g, '/'),
+            } : null,
+        }));
+
+        res.json(formattedCategories);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+export const getSubcategoriesByParentCategoryName = async (req, res) => {
+    const { parentCategoryName } = req.params;
+
+    try {
+        // Find the parent category by name
+        const parentCategory = await prisma.productCategory.findUnique({
+            where: { name: parentCategoryName }, // Make sure 'name' is unique in schema
+        });
+
+        if (!parentCategory) {
+            return res.status(404).json({ message: 'Parent category not found' });
+        }
+
+        // Fetch subcategories related to the found parent category
+        const subcategories = await prisma.subcategory.findMany({
+            where: { parentCategoryId: parentCategory.id },
+        });
+
+        res.status(200).json(subcategories);
+    } catch (error) {
+        console.error('Error fetching subcategories by parent category name:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 
 export const addCategory = async (req, res) => {
     const { name, description } = req.body;
