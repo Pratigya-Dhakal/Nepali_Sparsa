@@ -63,6 +63,12 @@ const AllProducts = () => {
                                     <NavLink to={`/admin/products/update/${product.id}`} className="update-button">
                                         Update
                                     </NavLink>
+                                    <NavLink 
+                                        to={`/admin/deals/add/${product.id}`}
+                                        className="add-deal-button"
+                                    >
+                                        Add Deals
+                                    </NavLink>
                                     <button 
                                         className="delete-button" 
                                         onClick={() => handleDelete(product.id)}

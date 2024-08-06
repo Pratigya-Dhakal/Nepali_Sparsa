@@ -16,13 +16,14 @@ enum Verify {
   VERIFIED
   NOTVERIFIED
 }
-// Enum for different deal types
+
 enum DealType {
   HOT
   FEATURED
   ON_SALE
+  FLASH_SALE
+  DISCOUNT
 }
-
 
 model User {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
@@ -65,22 +66,22 @@ model Product {
   description       String
   price             Float
   sku               String
-  size              String?         // Make this field nullable
+  size              String?          // Nullable field
   category          ProductCategory? @relation(fields: [categoryId], references: [id])
   categoryId        String?          @db.ObjectId
   subcategory       Subcategory?     @relation(fields: [subcategoryId], references: [id])
   subcategoryId     String?          @db.ObjectId
-  quantity          Int?             // Nullable
-  discount          Discount?       @relation(fields: [discountId], references: [id])
-  discountId        String?         @db.ObjectId
+  quantity          Int?             // Nullable field
+  discount          Discount?        @relation(fields: [discountId], references: [id])
+  discountId        String?          @db.ObjectId
   orderItems        OrderItem[]
   cartItems         CartItem[]
   images            ProductImage[]
   comments          Comment[]
   reviews           Review[]
   deals             Deal[]      
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 }
 
 model ProductCategory {
@@ -91,13 +92,13 @@ model ProductCategory {
   parentId          String? @db.ObjectId
   subcategories     Subcategory[]     @relation("ProductCategoryToSubcategory")
   products          Product[]
+  deals             Deal[]
   image             CategoryImage?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
   ProductCategory ProductCategory[] @relation("CategoryToSubcategory")
 }
-
 
 model CategoryImage {
   id                String            @id @default(auto()) @map("_id") @db.ObjectId
@@ -115,10 +116,10 @@ model Subcategory {
   parentCategory ProductCategory   @relation("ProductCategoryToSubcategory", fields: [parentCategoryId], references: [id])
   parentCategoryId String          @db.ObjectId
   products       Product[]
+  deals          Deal[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 }
-
 
 model ProductImage {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -129,7 +130,6 @@ model ProductImage {
   updatedAt DateTime @updatedAt
 }
 
-
 model Discount {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -138,7 +138,7 @@ model Discount {
   active        Boolean   @default(true)
   products      Product[]
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Order {
@@ -229,18 +229,23 @@ model RefreshToken {
 
 model Deal {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  type        DealType    // Enum field to define deal types
-  category    String
+  type        DealType
+  category          ProductCategory? @relation(fields: [categoryId], references: [id])
+  categoryId        String?          @db.ObjectId
+  subcategory       Subcategory?     @relation(fields: [subcategoryId], references: [id])
+  subcategoryId     String?          @db.ObjectId
+  quantity          Int?             // Nullable field
   discount    String
   image       String
   title       String
-  newPrice    Float       // Changed to Float for numerical operations
-  oldPrice    Float       // Changed to Float for numerical operations
+  newPrice    Float
+  oldPrice    Float
   rating      Float
   description String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  startDate   DateTime
+  endDate     DateTime
   product     Product?    @relation(fields: [productId], references: [id])
   productId   String?     @db.ObjectId
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
-

@@ -12,7 +12,8 @@ import PrivateRoute from './PrivateRoute';
 import UserDetail from '../components/dashboard/UserDetail';
 import InventoryRoutes from './InventoryRoutes';
 import DiscountRoutes from './DiscountRoutes';
-import CommentsRoutes from './CommentsRoutes'; // Import CommentsRoutes
+import CommentsRoutes from './CommentsRoutes';
+import DealsRoutes from './DealsRoutes';
 
 const AppRoutes = () => (
     <Routes>
@@ -103,6 +104,16 @@ const AppRoutes = () => (
                 <PrivateRoute>
                     <AdminLayout>
                         <DiscountRoutes /> {/* Discount routes */}
+                    </AdminLayout>
+                </PrivateRoute>
+            } 
+        />
+        <Route 
+            path="/admin/deals/*" 
+            element={
+                <PrivateRoute>
+                    <AdminLayout>
+                        <DealsRoutes /> 
                     </AdminLayout>
                 </PrivateRoute>
             } 

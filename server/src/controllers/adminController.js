@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import sendEmail from '../utils/sendEmail.js';
 import { generateVerificationToken, verifyVerificationToken, generateTokens } from '../utils/tokenUtils.js';
+import fs from 'fs';
+import path from 'path';
+import url from 'url';
+import upload from '../middlewares/upload.js';
 
 const prisma = new PrismaClient();
 
@@ -261,10 +265,15 @@ export const getProductById = async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Validate the ID format if necessary
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ message: 'Invalid ID format' });
+        }
+
         // Find the product by ID
         const product = await prisma.product.findUnique({
             where: { id },
-            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+            include: { images: true, category: true, subcategory: true, discount: true }
         });
 
         if (!product) {
@@ -273,29 +282,45 @@ export const getProductById = async (req, res) => {
 
         res.status(200).json(product);
     } catch (error) {
-        console.error('Error retrieving product by ID:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        console.error('Error retrieving product by ID:', error.message); // Log error message
+        console.error('Error stack trace:', error.stack); // Log stack trace for more details
+        res.status(500).json({ message: 'Server error', error: error.message, stack: error.stack }); // Include error message and stack trace in response
     }
 };
+
 
 
 // Update Product
 export const updateProduct = async (req, res) => {
     const { id } = req.params;
-    const { name, description, price, sku, categoryId, subcategoryId, inventoryId, discountId } = req.body;
+    const { name, description, price, sku, categoryId, subcategoryId, discountId, quantity } = req.body;
     const images = req.files;
+    const oldImageIds = req.body.oldImageIds ? JSON.parse(req.body.oldImageIds) : [];
 
     try {
-        // Prepare the update data
+        // Validate IDs
+        const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id); // Adjust regex for your ObjectID format
+
+        // Fetch existing product details
+        const product = await prisma.product.findUnique({
+            where: { id },
+            include: { images: true }
+        });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Prepare update data
         const updateData = {
             name,
             description,
             price: parseFloat(price),
             sku,
-            category: categoryId ? { connect: { id: categoryId } } : undefined,
-            subcategory: subcategoryId ? { connect: { id: subcategoryId } } : undefined,
-            discount: discountId ? { connect: { id: discountId } } : undefined,
-            inventory: inventoryId ? { connect: { id: inventoryId } } : undefined,
+            category: categoryId && isValidObjectId(categoryId) ? { connect: { id: categoryId } } : undefined,
+            subcategory: subcategoryId && isValidObjectId(subcategoryId) ? { connect: { id: subcategoryId } } : undefined,
+            discount: discountId && isValidObjectId(discountId) ? { connect: { id: discountId } } : undefined,
+            quantity: quantity ? parseInt(quantity) : undefined,
             images: images && images.length > 0 ? {
                 create: images.map(file => ({
                     url: `/uploads/${file.filename}`
@@ -303,28 +328,43 @@ export const updateProduct = async (req, res) => {
             } : undefined,
         };
 
-        // Remove undefined fields from updateData
+        // Remove undefined fields
         Object.keys(updateData).forEach(key => {
             if (updateData[key] === undefined) {
                 delete updateData[key];
             }
         });
 
-        // Update the product
+        // Perform the update
         const updatedProduct = await prisma.product.update({
             where: { id },
             data: updateData,
-            include: { images: true, category: true, subcategory: true, inventory: true, discount: true }
+            include: { images: true }
+        });
+
+        // Delete old images that are no longer associated with the product
+        const oldImages = product.images.filter(image => !oldImageIds.includes(image.id));
+        
+        oldImages.forEach(async (image) => {
+            // Delete image file from filesystem
+            const filePath = path.join('uploads', path.basename(image.url));
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+
+            // Delete image record from the database
+            await prisma.productImage.delete({
+                where: { id: image.id }
+            });
         });
 
         res.status(200).json(updatedProduct);
     } catch (error) {
-        console.error('Error updating product:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error updating product:', error.message);
+        console.error('Error stack trace:', error.stack);
+        res.status(500).json({ message: 'Server error', error: error.message, stack: error.stack });
     }
 };
-
-
 export const deleteProduct = async (req, res) => {
     const { id } = req.params;
 
@@ -763,5 +803,66 @@ export const getSubcategoriesByID = async (req, res) => {
         res.json(subcategory);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export const deleteProductImage = async (req, res) => {
+    const { imageId } = req.params;
+
+    try {
+        // Find the image to delete
+        const image = await prisma.productImage.findUnique({
+            where: { id: imageId },
+        });
+
+        if (!image) {
+            return res.status(404).json({ message: 'Image not found' });
+        }
+
+        // Check if image URL is valid and extract file name
+        const imageUrl = new URL(image.url);
+        const fileName = path.basename(imageUrl.pathname);
+
+        if (!fileName) {
+            return res.status(400).json({ message: 'Image fileName is missing' });
+        }
+
+        // Construct the image file path
+        const uploadsDir = path.join(process.cwd(), 'uploads');
+        const imagePath = path.join(uploadsDir, fileName);
+
+        // Debug: Log the constructed imagePath
+        console.log('Constructed image path:', imagePath);
+
+        // Check if the file exists
+        fs.access(imagePath, fs.constants.F_OK, async (err) => {
+            if (err) {
+                console.error('Image file does not exist:', imagePath);
+                return res.status(404).json({ message: 'Image file does not exist' });
+            }
+
+            // Delete the image file from the file system
+            fs.unlink(imagePath, async (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error('Error deleting image file:', unlinkErr);
+                    return res.status(500).json({ message: 'Failed to delete image file', error: unlinkErr.message });
+                }
+
+                try {
+                    // Delete the image record from the database
+                    await prisma.productImage.delete({
+                        where: { id: imageId },
+                    });
+
+                    res.status(200).json({ message: 'Image deleted successfully' });
+                } catch (dbError) {
+                    console.error('Error deleting image record from database:', dbError);
+                    res.status(500).json({ message: 'Failed to delete image record from database', error: dbError.message });
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

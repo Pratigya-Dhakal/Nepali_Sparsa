@@ -144,7 +144,7 @@ const Navbar = () => {
                                 </Link>
                                 {hoveredCategory === category.name && (
                                     <div className="subcategory-card">
-                                        <h4>{category.name}'s Subcategories</h4>
+                                        <h4>{category.name}'s </h4>
                                         <ul>
                                             {subcategories.map(subcategory => (
                                                 <li key={subcategory.id}>

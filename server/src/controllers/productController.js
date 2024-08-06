@@ -91,25 +91,29 @@ try {
 export const getProductById = async (req, res) => {
     const { id } = req.params;
     try {
-    const product = await prisma.product.findUnique({
-        where: { id },
-        include: {
-        images: true,
-        category: true,
-        subcategory: true,
-        discount: true,
-        comments: true,
-        }
-    });
+        // Convert id to string if it's not already
+        const idStr = String(id);
+        
+        const product = await prisma.product.findUnique({
+            where: { id: idStr },
+            include: {
+                images: true,
+                category: true,
+                subcategory: true,
+                discount: true,
+                comments: true,
+            }
+        });
 
-    if (product) {
-        res.json(product);
-    } else {
-        res.status(404).json({ error: 'Product not found' });
-    }
+        if (product) {
+            res.json(product);
+        } else {
+            res.status(404).json({ error: 'Product not found' });
+        }
     } catch (error) {
-    console.error('Error fetching product by ID:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error fetching product by ID:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 

@@ -7,7 +7,7 @@ import {
     getCategoryById,getOrderedItemsList,
     getAllUsers,
     getUserById,
-    deleteUserById,
+    deleteUserById,deleteProductImage,
     searchUserByName,getUserDetailById,getSubcategoriesByCategoryId,getProductById,getSubcategoriesByID,getSubcategoriesByParentCategoryName
 } from '../controllers/adminController.js';
 import {
@@ -44,11 +44,14 @@ router.get('/subcategories/:subcategoryId', getSubcategoriesByID);
 router.get('/products', getAllProducts);
 router.post('/products', upload.array('images', 10), addProduct);
 router.get('/products/:id', getProductById);
-router.put('/products/:id', upload.array('images'), updateProduct);
+router.put('/products/:id', upload.array('images',10), updateProduct);
 router.delete('/products/:id', deleteProduct);
+router.delete('/products/:productId/images/:imageId', deleteProductImage);
+
 // Get products by category
 router.get('/products/category/:categoryName', getProductsByCategory);
 router.get('/orders/', getOrderedItemsList);
+
 
 //user routes
 router.get('/users',getAllUsers)

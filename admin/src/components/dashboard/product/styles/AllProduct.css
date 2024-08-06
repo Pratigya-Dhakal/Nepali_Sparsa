@@ -43,7 +43,7 @@ td {
     font-size: 14px;
 }
 
-button, .view-button, .update-button, .delete-button {
+button, .view-button, .update-button, .delete-button ,.add-deal-button{
     padding: 8px 16px;
     border: none;
     cursor: pointer;
@@ -81,4 +81,12 @@ button, .view-button, .update-button, .delete-button {
 
 .delete-button:hover {
     background-color: #f5cccc;
+}
+.add-deal-button{
+    background-color: #caeaf2;
+    color: #44787f;
+    text-decoration: none;
+}
+.add-deal-button:hover{
+    background-color: #54acb8;
 }

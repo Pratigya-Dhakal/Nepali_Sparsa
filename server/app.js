@@ -7,6 +7,7 @@ import cors from 'cors';
 import path from 'path';
 import productRoutes from './src/routes/productRoutes.js';
 import reviewRoutes from './src/routes/reviewRoutes.js';
+import dealRoutes from './src/routes/dealRoutes.js';
 
 // Initialize dotenv
 dotenv.config();
@@ -28,6 +29,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', productRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api', dealRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
