@@ -1,17 +1,18 @@
+// Backend Controller (userController.js)
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { generateVerificationToken, verifyVerificationToken, generateTokens } from '../utils/tokenUtils.js';
 import sendEmail from '../utils/sendEmail.js';
-import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
 export const userSignup = async (req, res) => {
-    const { username, email, password, firstName, lastName } = req.body;
+    const { firstName, lastName, email, password } = req.body;
+    const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`; // Create username from first and last name
     const hashedPassword = await bcrypt.hash(password, 12);
 
     try {
-        
+        // Check if email already exists
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
@@ -23,7 +24,7 @@ export const userSignup = async (req, res) => {
                 password: hashedPassword,
                 firstName,
                 lastName,
-                role: "USER",
+                role: "USER", // User role
                 verify: 'NOTVERIFIED',
             },
         });
@@ -35,9 +36,11 @@ export const userSignup = async (req, res) => {
 
         res.status(201).json({ message: 'Verification email sent. Please check your email.' });
     } catch (error) {
-        res.status(400).json({ message: 'Admin registration failed', error });
+        res.status(400).json({ message: 'User registration failed', error });
     }
 };
+
+
 
 export const verifyEmail = async (req, res) => {
     const { token } = req.query;
@@ -59,22 +62,21 @@ export const verifyEmail = async (req, res) => {
     }
 };
 
+
 export const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await prisma.user.findUnique({ where: { email } });
-
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         if (user.role !== 'USER') {
-            return res.status(403).json({ message: 'Not authorized as an user' });
+            return res.status(403).json({ message: 'Not authorized as a user' });
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
-        
         if (!isPasswordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
@@ -84,12 +86,14 @@ export const userLogin = async (req, res) => {
         }
 
         const { accessToken, refreshToken } = generateTokens(user.id, user.role);
-        res.status(500).json({ message: 'Login Successful', accessToken, refreshToken });
+        res.status(200).json({ message: 'Login successful', accessToken, refreshToken });
 
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+
 
 export const resendVerificationEmail = async (req, res) => {
     const { email } = req.body;
@@ -97,7 +101,7 @@ export const resendVerificationEmail = async (req, res) => {
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
-            return res.status(404).json({ message: 'USER not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
         if (user.verify === 'VERIFIED') {
@@ -105,7 +109,7 @@ export const resendVerificationEmail = async (req, res) => {
         }
 
         const { verificationToken } = generateVerificationToken(user.id, user.role, '1h');
-        const verificationUrl = `${req.protocol}://${req.get('host')}/api/user/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${req.protocol}://${req.get('host')}/api/users/verify-email?token=${verificationToken}`;
 
         await sendEmail(email, 'Email Verification', `Please verify your email by clicking the following link: ${verificationUrl}`);
 
@@ -114,6 +118,7 @@ export const resendVerificationEmail = async (req, res) => {
         res.status(400).json({ message: 'Failed to resend verification email', error });
     }
 };
+
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;

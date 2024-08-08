@@ -9,7 +9,8 @@ import AboutUs from '../pages/AboutUsPage';
 import ContactUsPage from '../pages/ContactUsPage';
 import SearchResults from '../pages/SearchResults';
 import ProductDetail from '../pages/ProductDetail';
-import FaqPage from '../pages/FaqPage'; // Add this line    
+import FaqPage from '../pages/FaqPage'; // Add this line   
+import EmailVerification from '../pages/EmailVerification'; // Add this line 
 
 const AppRoutes = () => {
     return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
             <Route path="/faq" element={< FaqPage/>} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/products/:id" element={<ProductDetail/>} />
+            <Route path="/verify-email" element={<EmailVerification />} />
             
         </Routes>
     );
