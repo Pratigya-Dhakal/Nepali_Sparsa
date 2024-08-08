@@ -1,5 +1,5 @@
 import express from 'express';
-import {forgotPassword, resetPassword, searchItems, addToCart, deleteFromCart, confirmOrder, userSignup, userLogin, verifyEmail } from '../controllers/userController.js';
+import {searchItems, addToCart, deleteFromCart, confirmOrder, userSignup, userLogin, verifyEmail,forgotPassword,resetPassword } from '../controllers/userController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 
 

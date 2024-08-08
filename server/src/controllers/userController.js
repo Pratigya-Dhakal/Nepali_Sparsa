@@ -1,4 +1,3 @@
-// Backend Controller (userController.js)
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { generateVerificationToken, verifyVerificationToken, generateTokens } from '../utils/tokenUtils.js';
@@ -8,11 +7,10 @@ const prisma = new PrismaClient();
 
 export const userSignup = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
-    const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`; // Create username from first and last name
+    const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`;
     const hashedPassword = await bcrypt.hash(password, 12);
 
     try {
-        // Check if email already exists
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
@@ -24,7 +22,7 @@ export const userSignup = async (req, res) => {
                 password: hashedPassword,
                 firstName,
                 lastName,
-                role: "USER", // User role
+                role: 'USER',
                 verify: 'NOTVERIFIED',
             },
         });
@@ -36,11 +34,10 @@ export const userSignup = async (req, res) => {
 
         res.status(201).json({ message: 'Verification email sent. Please check your email.' });
     } catch (error) {
-        res.status(400).json({ message: 'User registration failed', error });
+        console.error('User signup error:', error);
+        res.status(400).json({ message: 'User registration failed', error: error.message });
     }
 };
-
-
 
 export const verifyEmail = async (req, res) => {
     const { token } = req.query;
@@ -51,17 +48,17 @@ export const verifyEmail = async (req, res) => {
             return res.status(400).json({ message: 'Invalid or expired token' });
         }
 
-        const updatedUser = await prisma.user.update({
+        await prisma.user.update({
             where: { id: decoded.userId },
             data: { verify: 'VERIFIED' },
         });
 
         res.status(200).json({ message: 'Email verified successfully' });
     } catch (error) {
-        res.status(400).json({ message: 'Invalid or expired token', error });
+        console.error('Email verification error:', error);
+        res.status(400).json({ message: 'Invalid or expired token', error: error.message });
     }
 };
-
 
 export const userLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -87,16 +84,15 @@ export const userLogin = async (req, res) => {
 
         const { accessToken, refreshToken } = generateTokens(user.id, user.role);
         res.status(200).json({ message: 'Login successful', accessToken, refreshToken });
-
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
 
-
 export const resendVerificationEmail = async (req, res) => {
     const { email } = req.body;
+
     try {
         const user = await prisma.user.findUnique({ where: { email } });
 
@@ -115,124 +111,150 @@ export const resendVerificationEmail = async (req, res) => {
 
         res.status(200).json({ message: 'Verification email resent. Please check your email.' });
     } catch (error) {
-        res.status(400).json({ message: 'Failed to resend verification email', error });
+        console.error('Resend verification email error:', error);
+        res.status(400).json({ message: 'Failed to resend verification email', error: error.message });
     }
 };
 
-
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
-    
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
     try {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const { resetToken } = generateResetToken(user.id);
-        const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
+        const { verificationToken } = generateVerificationToken(user.id);
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/users/reset-password?token=${verificationToken}`;
 
         await sendEmail(email, 'Password Reset', `Please reset your password by clicking the following link: ${resetUrl}`);
 
         res.status(200).json({ message: 'Password reset email sent' });
     } catch (error) {
-        res.status(500).json({ message: 'Error processing request', error });
+        console.error('Forgot password error:', error);
+        res.status(500).json({ message: 'Error processing request', error: error.message });
     }
 };
 
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
+    if (!token || !newPassword) {
+        return res.status(400).json({ message: 'Token and new password are required.' });
+    }
+
+    const decoded = verifyVerificationToken(token);
+    if (!decoded) {
+        return res.status(400).json({ message: 'Invalid or expired token.' });
+    }
+
     try {
-        const decoded = verifyResetToken(token);
-
-        if (!decoded) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 12);
-
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
         await prisma.user.update({
             where: { id: decoded.userId },
-            data: { password: hashedPassword },
+            data: { password: hashedPassword }
         });
-
-        res.status(200).json({ message: 'Password updated successfully' });
+        res.status(200).json({ message: 'Password reset successfully.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error processing request', error });
+        console.error('Reset password error:', error);
+        res.status(500).json({ message: 'Error updating password.', error: error.message });
     }
 };
-
 
 export const searchItems = async (req, res) => {
     const { query } = req.query;
 
-    const items = await prisma.product.findMany({
-        where: {
-        OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
-        ],
-        },
-    });
+    try {
+        const items = await prisma.product.findMany({
+            where: {
+                OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { description: { contains: query, mode: 'insensitive' } },
+                ],
+            },
+        });
 
-    res.json(items);
-    };
+        res.json(items);
+    } catch (error) {
+        console.error('Search items error:', error);
+        res.status(500).json({ message: 'Error searching items', error: error.message });
+    }
+};
 
 export const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
     const userId = req.user.id;
 
-    let cart = await prisma.shoppingCart.findUnique({
-        where: { userId },
-    });
-
-    if (!cart) {
-        cart = await prisma.shoppingCart.create({
-        data: {
-            user: { connect: { id: userId } },
-        },
+    try {
+        let cart = await prisma.shoppingCart.findUnique({
+            where: { userId },
         });
+
+        if (!cart) {
+            cart = await prisma.shoppingCart.create({
+                data: {
+                    user: { connect: { id: userId } },
+                },
+            });
+        }
+
+        const item = await prisma.cartItem.create({
+            data: {
+                cart: { connect: { id: cart.id } },
+                product: { connect: { id: productId } },
+                quantity,
+            },
+        });
+
+        res.status(201).json(item);
+    } catch (error) {
+        console.error('Add to cart error:', error);
+        res.status(500).json({ message: 'Error adding item to cart', error: error.message });
     }
-
-    const item = await prisma.cartItem.create({
-        data: {
-        cart: { connect: { id: cart.id } },
-        product: { connect: { id: productId } },
-        quantity,
-        },
-    });
-
-    res.status(201).json(item);
-    };
+};
 
 export const deleteFromCart = async (req, res) => {
     const { itemId } = req.params;
 
-    await prisma.cartItem.delete({
-        where: { id: itemId },
-    });
+    try {
+        await prisma.cartItem.delete({
+            where: { id: itemId },
+        });
 
-    res.status(204).json({ message: 'Item removed from cart' });
-    };
+        res.status(204).json({ message: 'Item removed from cart' });
+    } catch (error) {
+        console.error('Delete from cart error:', error);
+        res.status(500).json({ message: 'Error removing item from cart', error: error.message });
+    }
+};
 
-    export const confirmOrder = async (req, res) => {
+export const confirmOrder = async (req, res) => {
     const { items, total } = req.body;
     const userId = req.user.id;
 
-    const order = await prisma.order.create({
-        data: {
-        user: { connect: { id: userId } },
-        total,
-        items: {
-            create: items.map(item => ({
-            product: { connect: { id: item.productId } },
-            quantity: item.quantity,
-            price: item.price,
-            })),
-        },
-        },
-    });
+    try {
+        const order = await prisma.order.create({
+            data: {
+                user: { connect: { id: userId } },
+                total,
+                items: {
+                    create: items.map(item => ({
+                        product: { connect: { id: item.productId } },
+                        quantity: item.quantity,
+                        price: item.price,
+                    })),
+                },
+            },
+        });
 
-    res.status(201).json(order);
+        res.status(201).json(order);
+    } catch (error) {
+        console.error('Confirm order error:', error);
+        res.status(500).json({ message: 'Error confirming order', error: error.message });
+    }
 };
