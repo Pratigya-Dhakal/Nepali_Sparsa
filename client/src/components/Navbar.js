@@ -123,7 +123,7 @@ const Navbar = () => {
                             <Link to="/cart" aria-label="Shopping Cart">
                                 <FontAwesomeIcon icon={faShoppingCart} />
                             </Link>
-                            <Link to="/login" aria-label="User Profile">
+                            <Link to="/signIn" aria-label="User Profile">
                                 <FontAwesomeIcon icon={faUser} />
                             </Link>
                         </div>
