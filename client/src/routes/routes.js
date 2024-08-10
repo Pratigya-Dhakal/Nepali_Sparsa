@@ -13,6 +13,7 @@ import FaqPage from '../pages/FaqPage'; // Add this line
 import EmailVerification from '../pages/EmailVerification'; 
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
+import CheckoutPage from '../pages/CheckoutPage';
 
 const AppRoutes = () => {
     return (
@@ -29,6 +30,8 @@ const AppRoutes = () => {
             <Route path="/products/:id" element={<ProductDetail/>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+
 
             
         </Routes>
