@@ -1,0 +1,33 @@
+.comment {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.comment-content {
+    display: flex;
+    align-items: center;
+}
+
+.replies {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+form {
+    margin-top: 10px;
+}
+
+input {
+    padding: 5px;
+    margin-right: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+button:hover {
+    cursor: pointer;
+}

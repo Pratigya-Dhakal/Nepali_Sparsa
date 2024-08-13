@@ -1,0 +1,101 @@
+.sign-in {
+    display: flex;
+    height: 100vh;
+}
+.form-container, .image-container {
+    flex: 1; /* This makes both containers take equal space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.form-container {
+    padding: 20px;
+    background-color: #fff;
+}
+
+.image-container {
+    position: relative;
+    background-size: cover;
+    display: flex;
+    align-items: flex-end;
+}
+
+.image-container img {
+    width: 100%; /* Adjust the image to cover the container width */
+    height: 100%; /* Adjust the image to cover the container height */
+    object-fit: cover; /* This will ensure the image covers the area without losing its aspect ratio */
+}
+
+.logo {
+    font-size: 50px;
+    font-weight: bold;
+    color: #a70072;
+}
+
+h2, h3 {
+    margin: 10px 0;
+    color: #333;
+}
+
+p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    background: #a70072;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #a70072;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.or {
+    margin: 20px 0;
+    color: #888;
+}
+
+.google-sign-in {
+    padding: 10px;
+    background: #db7396;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.google-sign-in:hover {
+    background: #a70072;
+}

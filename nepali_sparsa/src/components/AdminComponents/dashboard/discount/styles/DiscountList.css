@@ -1,0 +1,38 @@
+.discount-list {
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.discount-list h1 {
+    color: #4a4a4a;
+}
+
+.discount-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.discount-list th, .discount-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.discount-list th {
+    background-color: #f4f4f4;
+}
+
+.link-button {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.link-button:hover {
+    background-color: #007bff;
+    color: #fff;
+}

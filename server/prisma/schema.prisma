@@ -67,6 +67,7 @@ model Product {
   price             Float
   sku               String
   size              String?          // Nullable field
+  color             String?          // Nullable field
   category          ProductCategory? @relation(fields: [categoryId], references: [id])
   categoryId        String?          @db.ObjectId
   subcategory       Subcategory?     @relation(fields: [subcategoryId], references: [id])
