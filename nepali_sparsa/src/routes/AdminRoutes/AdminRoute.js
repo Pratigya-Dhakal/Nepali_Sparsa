@@ -18,7 +18,7 @@ import AdminLayout from '../../layouts/AdminLayout';
 
 const AppRoutes = () => (
     <Routes>
-        <Route path="/admin/signIn" element={<SignIn />} />
+        <Route path="/" element={<SignIn />} />
         <Route 
             path="/admin/dashboard" 
             element={

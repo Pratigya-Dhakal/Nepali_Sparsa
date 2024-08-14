@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppRoutes from './routes/userRoutes';
 import AdminRoutes from './routes/AdminRoutes/AdminRoute';
 import './App.css';
@@ -7,8 +7,13 @@ import './App.css';
 const App = () => {
   return (
     <Router>
-      <AppRoutes />
-      <AdminRoutes />
+      <Routes>
+        {/* User Routes */}
+        <Route path="/*" element={<AppRoutes />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin/*" element={<AdminRoutes />} />
+      </Routes>
     </Router>
   );
 };

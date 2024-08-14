@@ -9,7 +9,7 @@ import AboutUs from '../pages/Users/AboutUsPage';
 import ContactUsPage from '../pages/Users/ContactUsPage';
 import SearchResults from '../pages/Users/SearchResults';
 import ProductDetail from '../pages/Users/ProductDetail';
-import FaqPage from '../pages/Users/FaqPage'; // Add this line   
+import FaqPage from '../pages/Users/FaqPage';
 import EmailVerification from '../pages/Users/EmailVerification'; 
 import ForgotPassword from '../pages/Users/ForgotPassword';
 import ResetPasswordPage from '../pages/Users/ResetPasswordPage';
@@ -25,15 +25,12 @@ const AppRoutes = () => {
             <Route path="/signUp" element={<SignUpPage />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUsPage />} />
-            <Route path="/faq" element={< FaqPage/>} />
+            <Route path="/faq" element={<FaqPage />} />
             <Route path="/search" element={<SearchResults />} />
-            <Route path="/products/:id" element={<ProductDetail/>} />
+            <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
-
-
-            
         </Routes>
     );
 };
