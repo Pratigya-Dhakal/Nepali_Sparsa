@@ -27,7 +27,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // API routes
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api', dealRoutes);
 

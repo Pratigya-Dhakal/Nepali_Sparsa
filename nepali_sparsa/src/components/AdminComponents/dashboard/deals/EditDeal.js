@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './styles/AdminDeals.css'; // Import the CSS file
 
 const EditDeal = () => {
-    const { id } = useParams(); // Get deal ID from URL parameters
+    const { id: dealId, productId } = useParams(); // Get deal ID and product ID from URL parameters
     const navigate = useNavigate();
 
     const [deal, setDeal] = useState({
@@ -19,7 +19,8 @@ const EditDeal = () => {
         description: '',
         startDate: '',
         endDate: '',
-        type: ''
+        type: '',
+        productId: productId || '' // Initialize productId from URL
     });
 
     const [categories, setCategories] = useState([]);
@@ -30,7 +31,7 @@ const EditDeal = () => {
     useEffect(() => {
         const fetchDealDetails = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/deals/${id}`);
+                const { data } = await axios.get(`http://localhost:5000/api/deals/${dealId}`);
                 setDeal({
                     title: data.title || '',
                     category: data.categoryId || '',
@@ -43,7 +44,8 @@ const EditDeal = () => {
                     description: data.description || '',
                     startDate: new Date(data.startDate).toISOString().split('T')[0] || '',
                     endDate: new Date(data.endDate).toISOString().split('T')[0] || '',
-                    type: data.type || ''
+                    type: data.type || '',
+                    productId: data.productId || productId // Use productId from URL if available
                 });
             } catch (error) {
                 console.error('Error fetching deal details:', error);
@@ -65,7 +67,7 @@ const EditDeal = () => {
 
         fetchDealDetails();
         fetchCategories();
-    }, [id]);
+    }, [dealId, productId]);
 
     useEffect(() => {
         const fetchSubcategories = async () => {
@@ -100,7 +102,7 @@ const EditDeal = () => {
         }
 
         try {
-            await axios.put(`http://localhost:5000/api/deals/${id}`, {
+            await axios.put(`http://localhost:5000/api/deals/${dealId}`, {
                 title: deal.title,
                 categoryId: deal.category,
                 subcategoryId: deal.subcategory,
@@ -112,7 +114,8 @@ const EditDeal = () => {
                 description: deal.description,
                 startDate: new Date(deal.startDate).toISOString(), // Ensure date format is correct
                 endDate: new Date(deal.endDate).toISOString(),     // Ensure date format is correct
-                type: deal.type
+                type: deal.type,
+                productId: deal.productId // Include productId in the update request
             });
             navigate('/admin/deals/all');
         } catch (error) {
@@ -236,6 +239,12 @@ const EditDeal = () => {
                     <option value="FLASH_SALE">FLASH_SALE</option>
                     <option value="DISCOUNT">DISCOUNT</option>
                 </select>
+                <input 
+                    type="text" 
+                    name="productId" 
+                    placeholder="Product ID" 
+                    value={deal.productId} 
+                />
                 <button className="button" type="submit">Update Deal</button>
             </form>
         </div>

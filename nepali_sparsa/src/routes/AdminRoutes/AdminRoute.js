@@ -20,7 +20,7 @@ const AppRoutes = () => (
     <Routes>
         <Route path="/" element={<SignIn />} />
         <Route 
-            path="/admin/dashboard" 
+            path="/dashboard" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -30,7 +30,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/categories/*" 
+            path="/categories/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -40,7 +40,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/subcategories/*" 
+            path="/subcategories/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -50,7 +50,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/orders" 
+            path="/orders" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -60,7 +60,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/products/*" 
+            path="/products/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -70,7 +70,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/users/" 
+            path="/users/" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -80,7 +80,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/users/detail/:id" 
+            path="/users/detail/:id" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -90,7 +90,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/discounts/*" 
+            path="/discounts/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -100,7 +100,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/deals/*" 
+            path="/deals/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>
@@ -110,7 +110,7 @@ const AppRoutes = () => (
             } 
         />
         <Route 
-            path="/admin/comments/*" 
+            path="/comments/*" 
             element={
                 <PrivateRoute>
                     <AdminLayout>

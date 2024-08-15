@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
+import { Link } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './styles/DealsSection.css';
@@ -18,8 +19,17 @@ const DealsSection = () => {
         setLoading(true);
         try {
             const response = await fetch('http://localhost:5000/api/deals');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
             const data = await response.json();
-            setDeals(data);
+
+            // Ensure data is an array
+            if (Array.isArray(data)) {
+                setDeals(data);
+            } else {
+                setError('No deals available at the moment.');
+            }
         } catch (error) {
             console.error('Error fetching deals:', error);
             setError('Failed to fetch deals. Please try again later.');
@@ -57,7 +67,11 @@ const DealsSection = () => {
                                     ${deal.newPrice.toFixed(2) || '0.00'} <span className="old-price">${deal.oldPrice.toFixed(2) || '0.00'}</span>
                                 </div>
                                 <div className="rating">⭐ {deal.rating || 'No Rating'}</div>
-                                <a href="/shop-now" className="shop-now">Shop Now ➜</a>
+                                
+                                {/* Ensure productId is passed correctly */}
+                                {deal.productId && (
+                                    <Link to={`/products/${deal.productId}`} className="shop-now">Shop Now ➜</Link>
+                                )}
                             </div>
                         ))
                     ) : (

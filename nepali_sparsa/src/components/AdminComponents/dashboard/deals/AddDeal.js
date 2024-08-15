@@ -4,10 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './styles/AdminDeals.css'; // Import the CSS file
 
 const AddDeal = () => {
-    const { id } = useParams(); // Get product ID from URL parameters
+    const { id: productId } = useParams(); // Extract product ID from URL parameters
     const navigate = useNavigate();
 
     const [deal, setDeal] = useState({
+        productId: productId || '', // Initialize productId from URL
         title: '',
         category: '',
         subcategory: '',
@@ -27,15 +28,15 @@ const AddDeal = () => {
 
     useEffect(() => {
         const fetchProductDetails = async () => {
-            if (!id) return; // Avoid fetching if id is not provided
+            if (!productId) return; // Avoid fetching if productId is not provided
 
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/products/${id}`);
-                setDeal({
+                const { data } = await axios.get(`http://localhost:5000/api/products/${productId}`);
+                setDeal(prevDeal => ({
+                    ...prevDeal,
                     title: data.name || '',
                     category: data.categoryId || '',
                     subcategory: data.subcategoryId || '',
-                    discount: '',
                     image: data.images?.[0]?.url || '',
                     newPrice: '',
                     oldPrice: data.price || '',
@@ -44,7 +45,7 @@ const AddDeal = () => {
                     startDate: '',
                     endDate: '',
                     type: ''
-                });
+                }));
             } catch (error) {
                 console.error('Error fetching product details:', error);
                 alert('An error occurred while fetching product details. Please try again later.');
@@ -63,7 +64,7 @@ const AddDeal = () => {
 
         fetchCategories();
         fetchProductDetails();
-    }, [id]);
+    }, [productId]);
 
     useEffect(() => {
         const fetchSubcategories = async () => {
@@ -92,7 +93,7 @@ const AddDeal = () => {
         e.preventDefault();
         
         // Basic validation
-        if (!deal.title || !deal.category || !deal.subcategory || !deal.discount || !deal.image || !deal.newPrice || !deal.oldPrice || !deal.rating || !deal.description || !deal.startDate || !deal.endDate || !deal.type) {
+        if (!deal.productId || !deal.title || !deal.category || !deal.subcategory || !deal.discount || !deal.image || !deal.newPrice || !deal.oldPrice || !deal.rating || !deal.description || !deal.startDate || !deal.endDate || !deal.type) {
             alert('Please fill in all required fields.');
             return;
         }
@@ -100,6 +101,7 @@ const AddDeal = () => {
         try {
             console.log('Submitting data:', deal); // Log data to be sent
             await axios.post('http://localhost:5000/api/deals', {
+                productId: deal.productId, // Include productId in the request
                 title: deal.title,
                 categoryId: deal.category,
                 subcategoryId: deal.subcategory,
@@ -119,12 +121,18 @@ const AddDeal = () => {
             alert('An error occurred while adding the deal. Please check the console for details.');
         }
     };
-    
 
     return (
         <div className="container">
             <h1>Add Deal</h1>
             <form className="form" onSubmit={handleSubmit}>
+                <input 
+                    type="text" 
+                    name="productId" 
+                    placeholder="Product ID" 
+                    value={deal.productId} 
+                    readOnly // Make the productId read-only
+                />
                 <input 
                     type="text" 
                     name="title" 

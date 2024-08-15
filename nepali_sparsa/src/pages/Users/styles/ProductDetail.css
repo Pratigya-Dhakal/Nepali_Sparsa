@@ -1,170 +1,213 @@
+/* Container for the product detail page */
 .product-detail-container {
-    width: 80%;
-    margin: 0 auto;
-    font-family: 'Arial', sans-serif;
-    color: #333;
+    width: 100%;
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
+/* Breadcrumb navigation */
 .breadcrumb {
-    margin: 20px 0;
     font-size: 14px;
-    color: #999;
+    margin-bottom: 20px;
+    color: #888;
 }
 
+/* Flex container for image and info sections */
 .product-detail {
     display: flex;
-    gap: 40px;
-    margin-bottom: 50px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Prevent wrapping to ensure both sections stay on one line */
+    gap: 30px; /* Space between the two sections */
+    align-items: flex-start; /* Align items to the top */
 }
 
+/* Styling for the image section */
 .image-section {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 600px; /* Maximum width of the image section */
 }
 
+/* Swiper container for main product image */
+.main-swiper {
+    width: 100%;
+    height: 500px;
+    margin-bottom: 10px;
+}
+
+/* Main image styling */
 .main-image {
     width: 100%;
-    max-width: 500px;
-    margin-bottom: 10px;
+    height: 100%;
     object-fit: cover;
     border-radius: 10px;
 }
 
-.thumbnails {
+/* Swiper container for thumbnail images */
+.thumbnail-swiper {
+    margin-top: 10px;
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
+    overflow-x: auto; /* Allow horizontal scrolling for thumbnails */
 }
 
-.thumbnails img {
+/* Thumbnail image styling */
+.thumbnail {
     width: 80px;
     height: 80px;
     object-fit: cover;
-    border-radius: 5px;
-    cursor: pointer;
     border: 2px solid transparent;
-    transition: border-color 0.3s ease;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    border-radius: 5px;
 }
 
-.thumbnails img:hover {
-    border-color: #333;
+/* Thumbnail hover effect */
+.thumbnail:hover,
+.thumbnail.selected {
+    border-color: #000;
 }
 
+/* Styling for the info section */
 .info-section {
     flex: 1;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
-.info-section h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
+/* Rating section styling */
 .rating {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin: 10px 0;
 }
 
 .stars {
-    color: #FFD700;
+    color: gold;
     font-size: 20px;
-    margin-right: 10px;
 }
 
 .reviews {
+    color: #888;
     font-size: 14px;
-    color: #666;
 }
 
+/* Price styling */
 .price {
     font-size: 24px;
     color: #333;
-    margin-bottom: 20px;
+    margin: 10px 0;
 }
 
+/* Options section styling */
 .options {
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
+/* Size and color options styling */
 .size, .color {
     margin-bottom: 20px;
-}
-
-.size label, .color label {
-    font-size: 16px;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
 }
 
 .size-options, .color-options {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
+/* Button styling for size and color options */
 .size-button, .color-button {
-    padding: 10px 15px;
-    font-size: 16px;
+    padding: 8px 12px;
     border: 1px solid #ccc;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .size-button.selected, .color-button.selected {
     background-color: #333;
-    color: white;
+    color: #fff;
     border-color: #333;
 }
 
+/* Color button specific styling */
+.color-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Make color options circular */
+}
+
+/* Add to cart section styling */
 .add-to-cart-section {
     margin-top: 20px;
 }
 
+/* Container for buttons to ensure they are in a row */
+.button-row {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    justify-content: space-between; /* Ensure buttons are spaced out equally */
+}
+
+/* Stock message styling */
 .stock {
     margin-bottom: 10px;
     font-size: 14px;
-    color: red;
+    color: #888;
 }
 
+/* Quantity control styling */
 .quantity {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 10px;
+    width: 100%;
 }
 
 .quantity button {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background-color: white;
+    flex: 1;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    background-color: #f0f0f0; /* Light background for quantity buttons */
+    color: #333;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.quantity button:disabled {
+    background-color: #ddd; /* Disabled button styling */
+    cursor: not-allowed;
 }
 
 .quantity button:hover {
-    background-color: #f0f0f0;
+    background-color: #e0e0e0; /* Slightly darker on hover */
 }
 
+/* Styling for quantity input */
 .quantity input {
-    width: 50px;
+    flex: 2;
+    width: 100%;
     text-align: center;
-    font-size: 16px;
     border: 1px solid #ccc;
-    margin: 0 5px;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9; /* Light background for input */
 }
 
+/* Add to cart button styling */
 .add-to-cart {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 24px;
     background-color: #333;
-    color: white;
+    color: #fff;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
@@ -172,97 +215,99 @@
     background-color: #555;
 }
 
+/* Buy now button styling */
+.buy-now {
+    padding: 12px 24px;
+    background-color: #28a745; /* Green color for Buy Now */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.buy-now:hover {
+    background-color: #218838;
+}
+
+/* Tabs styling */
 .tabs {
+    margin: 20px 0;
     display: flex;
     gap: 20px;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    border-bottom: 1px solid #ccc;
 }
 
+/* Individual tab styling */
 .tab {
-    padding-bottom: 10px;
     cursor: pointer;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    padding: 10px 0;
+    font-size: 16px;
+    transition: all 0.3s;
 }
 
-.tab:hover {
-    color: #333;
+.tab.active {
     border-bottom: 2px solid #333;
+    color: #333;
 }
 
-.discussion-section {
-    margin-bottom: 50px;
+/* Tab content styling */
+.tab-content {
+    margin-top: 20px;
 }
 
-.related-products {
-    margin-top: 50px;
+/* Similar products section styling */
+.similar-products {
+    margin-top: 40px;
 }
 
-/* Responsive Design */
-@media screen and (max-width: 768px) {
+/* Grid layout for similar products */
+.similar-products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Individual similar product item styling */
+.similar-product-item {
+    text-align: center;
+}
+
+.similar-product-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.similar-product-item h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.similar-product-item p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .product-detail {
         flex-direction: column;
-        align-items: center;
     }
 
-    .info-section {
-        width: 100%;
-        text-align: center;
+    .image-section, .info-section {
+        flex: 1 1 100%;
+        max-width: 100%;
     }
 
-    .info-section h1 {
-        font-size: 24px;
+    .main-swiper {
+        height: 300px;
     }
 
-    .price {
-        font-size: 22px;
-    }
-
-    .add-to-cart-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .quantity {
-        justify-content: center;
-    }
-
-    .tabs {
-        justify-content: center;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .product-detail-container {
-        width: 90%;
-    }
-
-    .info-section h1 {
-        font-size: 20px;
-    }
-
-    .price {
-        font-size: 20px;
-    }
-
-    .size-button, .color-button {
-        padding: 8px 10px;
-        font-size: 14px;
-    }
-
-    .add-to-cart {
-        width: 100%;
-        padding: 10px 0;
-    }
-
-    .thumbnails img {
+    .thumbnail {
         width: 60px;
         height: 60px;
-    }
-
-    .quantity input {
-        width: 40px;
     }
 }

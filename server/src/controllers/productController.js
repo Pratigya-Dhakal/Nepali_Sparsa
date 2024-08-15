@@ -88,14 +88,17 @@ try {
 };
 
 // Get a product by ID
+// Get a product by ID
 export const getProductById = async (req, res) => {
     const { id } = req.params;
+
+    if (!id || id.length !== 24) { // MongoDB ObjectId is 24 hex characters
+        return res.status(400).json({ error: 'Invalid product ID' });
+    }
+
     try {
-        // Convert id to string if it's not already
-        const idStr = String(id);
-        
         const product = await prisma.product.findUnique({
-            where: { id: idStr },
+            where: { id },
             include: {
                 images: true,
                 category: true,
@@ -117,3 +120,53 @@ export const getProductById = async (req, res) => {
 };
 
 
+
+// Get similar products by category
+// Get similar products by category
+export const getSimilarProducts = async (req, res) => {
+    const { categoryName } = req.params;
+
+    if (!categoryName) {
+        console.error('Category name is missing in request');
+        return res.status(400).json({ error: 'Category name is required' });
+    }
+
+    try {
+        // Log the received category name
+        console.log(`Received categoryName: ${categoryName}`);
+
+        // Find the category by name
+        const category = await prisma.productCategory.findUnique({
+            where: { name: categoryName }
+        });
+
+        if (!category) {
+            console.error('Category not found');
+            return res.status(404).json({ error: 'Category not found' });
+        }
+
+        // Fetch products under this category
+        const products = await prisma.product.findMany({
+            where: {
+                categoryId: category.id
+            },
+            include: {
+                images: true,
+                category: true,
+                subcategory: true,
+                discount: true,
+                comments: true,
+            }
+        });
+
+        if (!products.length) {
+            console.error('No similar products found');
+            return res.status(404).json({ message: 'No similar products found' });
+        }
+
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching similar products:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
