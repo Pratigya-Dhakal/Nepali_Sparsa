@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import './styles/SignInPage.css';
 import sideImage from '../../assets/heroSection.png';
 import Navbar from '../../components/UserComponents/Navbar';
+import { toast } from 'react-toastify'; // Importing toast for notifications
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // For redirection
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,12 +25,16 @@ const SignIn = () => {
             if (response.data.accessToken) {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('refreshToken', response.data.refreshToken);
+                toast.success('Login successful!');
                 navigate('/'); // Redirect to home or another page after successful login
             } else {
                 setError('Login failed. Please try again.');
+                toast.error('Login failed. Please try again.');
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'An error occurred. Please try again.');
+            const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }

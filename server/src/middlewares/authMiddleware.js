@@ -7,32 +7,25 @@ const prisma = new PrismaClient();
 export const protect = async (req, res, next) => {
     let token;
 
-    // Check if the authorization header contains a Bearer token
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Extract the token from the authorization header
             token = req.headers.authorization.split(' ')[1];
-
-            // Verify the token and decode the user's ID
             const decoded = verifyToken(token);
 
             if (!decoded) {
                 return res.status(401).json({ message: 'Not authorized, token failed' });
             }
 
-            // Find the user by ID
             req.user = await prisma.user.findUnique({ where: { id: decoded.userId } });
 
             if (!req.user) {
                 return res.status(401).json({ message: 'Not authorized, user not found' });
             }
 
-            // Check if the user's email is verified
             if (req.user.verify !== 'VERIFIED') {
                 return res.status(403).json({ message: 'Please verify your email to access this resource' });
             }
 
-            // Proceed to the next middleware or route handler
             next();
         } catch (error) {
             console.error(error);
@@ -42,7 +35,6 @@ export const protect = async (req, res, next) => {
         res.status(401).json({ message: 'Not authorized, no token' });
     }
 };
-
 // Middleware to check if the user has the role 'USER'
 export const user = (req, res, next) => {
     if (req.user && req.user.role === 'USER') {

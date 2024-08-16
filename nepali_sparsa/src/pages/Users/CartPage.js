@@ -10,21 +10,24 @@ const CartPage = () => {
 
     useEffect(() => {
         const fetchCartItems = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/signIn');
-                    return;
-                }
+            const token = localStorage.getItem('token');
+            console.log('Token:', token);
+            if (!token) {
+                navigate('/signIn');
+                return;
+            }
 
+            try {
                 const { data } = await axios.get('http://localhost:5000/api/cart', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setCartItems(data);
+                console.log('Cart Data:', data); // Check what data is being returned
+                setCartItems(data.items || data); // Adjust based on actual API response
             } catch (err) {
-                setError(err.response ? err.response.data.message : 'Error fetching cart items');
+                console.error('Error:', err);
+                setError(err.response?.data?.message || 'Error fetching cart items');
             } finally {
                 setLoading(false);
             }
@@ -43,7 +46,8 @@ const CartPage = () => {
             });
             setCartItems(cartItems.filter(item => item.id !== id));
         } catch (err) {
-            setError(err.response ? err.response.data.message : 'Error removing item');
+            console.error('Error removing item:', err);
+            setError(err.response?.data?.message || 'Error removing item');
         }
     };
 
@@ -53,11 +57,6 @@ const CartPage = () => {
 
     if (error) {
         return <div>{error}</div>;
-    }
-
-    if (!localStorage.getItem('token')) {
-        navigate('/login');
-        return null;
     }
 
     return (
@@ -80,7 +79,7 @@ const CartPage = () => {
                         {cartItems.map(item => (
                             <tr key={item.id}>
                                 <td>{item.product.name}</td>
-                                <td>${item.product.price}</td>
+                                <td>${item.product.price.toFixed(2)}</td>
                                 <td>{item.quantity}</td>
                                 <td>${(item.product.price * item.quantity).toFixed(2)}</td>
                                 <td>
