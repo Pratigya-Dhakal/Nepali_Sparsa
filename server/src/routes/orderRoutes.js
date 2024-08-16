@@ -1,9 +1,10 @@
-const express = require('express');
-const { createOrder } = require('../controllers/orderController');
-const auth = require('../middlewares/authMiddleware');
+import express from 'express';
+import { protect } from '../middlewares/authMiddleware.js'; // Adjust path as needed
+import { placeOrder } from '../controllers/orderController.js'; // Adjust path as needed
 
 const router = express.Router();
 
-router.post('/', auth, createOrder);
+// Route to place an order
+router.post('/place-order', protect, placeOrder);
 
-module.exports = router;
+export default router;

@@ -14,6 +14,7 @@ import EmailVerification from '../pages/Users/EmailVerification';
 import ForgotPassword from '../pages/Users/ForgotPassword';
 import ResetPasswordPage from '../pages/Users/ResetPasswordPage';
 import CheckoutPage from '../pages/Users/CheckoutPage';
+import CartPage from '../pages/Users/CartPage';
 
 const AppRoutes = () => {
     return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/cart" element={<CartPage />} />
         </Routes>
     );
 };
