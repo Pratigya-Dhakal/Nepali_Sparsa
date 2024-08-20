@@ -5,6 +5,7 @@ import './styles/HeroSection.css';
 import onlineShop from '../../assets/onlineShop.png';
 import OnlineShopCart from '../../assets/onlineShopCart.png';
 import OnlineShopHandPhone from '../../assets/onlineShopHandPhone.png';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
     return (
@@ -12,7 +13,9 @@ const HeroSection = () => {
             <div className="hero-content">
                 <h1 className="hero-title">Embrace the Elegance of Nepali Craftsmanship</h1>
                 <p className="hero-description">Discover the latest trends in clothing, accessories, and utensils. Enjoy premium quality at affordable prices with Nepali Sparsa.</p>
-                <button className="hero-button">Shop Now</button>
+                <Link to="/shop" >
+                        <button className="hero-button">Shop Now</button>
+                </Link>
             </div>
             <div className="hero-carousel">
                 <Carousel 
