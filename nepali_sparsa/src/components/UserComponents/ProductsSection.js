@@ -10,18 +10,35 @@ const ProductsSection = () => {
     const [totalCount, setTotalCount] = useState(0);
     const itemsPerPage = window.innerWidth > 768 ? 20 : 10;
 
+    // Use a Set to keep track of product IDs
+    const [productIds, setProductIds] = useState(new Set());
+
     useEffect(() => {
         fetchProducts(page);
     }, [page]);
 
     const fetchProducts = async (page) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/products`, {
+            const response = await axios.get('http://localhost:5000/api/products', {
                 params: { page, limit: itemsPerPage }
             });
-            setProducts(prevProducts => [...prevProducts, ...response.data.products]);
+
+            // Filter out products that are already in the productIds set
+            const newProducts = response.data.products.filter(product => !productIds.has(product.id));
+
+            // Update the Set with new product IDs
+            setProductIds(prevIds => new Set([...prevIds, ...newProducts.map(product => product.id)]));
+
+            // Combine existing products with the new ones and remove duplicates
+            setProducts(prevProducts => {
+                const combinedProducts = [...prevProducts, ...newProducts];
+                const uniqueProducts = Array.from(new Map(combinedProducts.map(product => [product.id, product])).values());
+                return uniqueProducts;
+            });
+
             setTotalCount(response.data.totalCount);
-            if (response.data.products.length < itemsPerPage || (page + 1) * itemsPerPage >= response.data.totalCount) {
+
+            if (newProducts.length < itemsPerPage || (page + 1) * itemsPerPage >= response.data.totalCount) {
                 setHasMore(false);
             }
         } catch (error) {
@@ -37,8 +54,8 @@ const ProductsSection = () => {
         <div className="products-page">
             <h1>Our Products</h1>
             <div className="products-grid">
-                {products.map((product, index) => (
-                    <ProductCard key={`${product.id}-${index}`} product={product} />
+                {products.map(product => (
+                    <ProductCard key={product.id} product={product} />
                 ))}
             </div>
             {hasMore && (
