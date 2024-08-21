@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './styles/ShopPage.css';
 import Navbar from '../../components/UserComponents/Navbar';
 import Footer from '../../components/UserComponents/Footer';
+import { FaShoppingCart } from 'react-icons/fa';
 
 const baseUrl = 'http://localhost:5000'; // Base URL for your API
 
@@ -23,8 +24,19 @@ const ShopPage = () => {
 
     useEffect(() => {
         fetchCategories();
+    }, []);
+
+    useEffect(() => {
+        setProducts([]); // Clear products when filters change
+        setPage(0);
         fetchProducts();
-    }, [page, selectedCategories, subcategory, priceRange, size, sortOption]);
+    }, [selectedCategories, subcategory, priceRange, size, sortOption]);
+
+    useEffect(() => {
+        if (page > 0) {
+            fetchProducts();
+        }
+    }, [page]);
 
     const fetchCategories = async () => {
         try {
@@ -50,7 +62,6 @@ const ShopPage = () => {
                 }
             });
 
-            // Filter out duplicate products based on unique IDs
             setProducts(prevProducts => {
                 const existingProductIds = new Set(prevProducts.map(product => product.id));
                 const newProducts = response.data.products.filter(product => !existingProductIds.has(product.id));
@@ -73,37 +84,22 @@ const ShopPage = () => {
                 ? prevCategories.filter(category => category !== value)
                 : [...prevCategories, value]
         );
-        setPage(0); // Reset page to 0 for new filters
-        setHasMore(true);
-        setProducts([]); // Clear products when filters change
     };
 
     const handleSubcategoryChange = (e) => {
         setSubcategory(e.target.value);
-        setPage(0); // Reset page to 0 for new filters
-        setHasMore(true);
-        setProducts([]);
     };
 
     const handlePriceRangeChange = (e) => {
         setPriceRange(prevRange => ({ ...prevRange, [e.target.name]: e.target.value }));
-        setPage(0); // Reset page to 0 for new filters
-        setHasMore(true);
-        setProducts([]);
     };
 
     const handleSizeChange = (e) => {
         setSize(e.target.value);
-        setPage(0); // Reset page to 0 for new filters
-        setHasMore(true);
-        setProducts([]);
     };
 
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
-        setPage(0); // Reset page to 0 for new filters
-        setHasMore(true);
-        setProducts([]);
     };
 
     const handleLoadMore = () => {
@@ -116,9 +112,22 @@ const ShopPage = () => {
         navigate(`/products/${productId}`); // Navigate to the product details page
     };
 
+    const handleAddToCart = async (productId) => {
+        try {
+            await axios.post(`${baseUrl}/api/cart`, { productId }); // Update the database
+            navigate('/cart'); // Show the products in the cart page
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
+    };
+
+    const handleBuyNow = (productId) => {
+        navigate(`/checkout?product=${productId}`); // Navigate to the checkout page
+    };
+
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <div className="shop-page">
                 <div className="shop-header">
                     <h2>Browse Products</h2>
@@ -159,6 +168,7 @@ const ShopPage = () => {
                                 value={priceRange.min} 
                                 onChange={handlePriceRangeChange} 
                                 placeholder="Min Price"
+                                min="0"
                             />
                             <input 
                                 type="number" 
@@ -166,6 +176,7 @@ const ShopPage = () => {
                                 value={priceRange.max} 
                                 onChange={handlePriceRangeChange} 
                                 placeholder="Max Price"
+                                min="0"
                             />
                         </div>
 
@@ -197,9 +208,8 @@ const ShopPage = () => {
 
                     <div className="product-grid">
                         {products.map(product => (
-                            <div key={product.id} className="product-card" onClick={() => handleProductClick(product.id)}>
-                                <div className="product-image">
-                                    {/* Render product images */}
+                            <div key={product.id} className="product-card">
+                                <div className="product-image" onClick={() => handleProductClick(product.id)}>
                                     {product.images && product.images.length > 0 ? (
                                         <img src={`${baseUrl}${product.images[0].url}`} alt={product.name} />
                                     ) : (
@@ -208,11 +218,33 @@ const ShopPage = () => {
                                     {product.discount && <span className="sale-badge">SALE</span>}
                                 </div>
                                 <div className="product-details">
-                                    <h3>{product.name}</h3>
-                                    <p className="product-price">${product.price}</p>
-                                    <p className="product-colors">
-                                        {product.colors?.length > 0 ? `${product.colors.length} Colors` : 'No Colors Available'}
+                                    <h3 className="product-name">{product.name}</h3>
+                                    <p className="product-description">
+                                        {product.description.length > 50 ? 
+                                            product.description.substring(0, 50) + '...' : 
+                                            product.description}
                                     </p>
+                                    <div className="price-quantity-container">
+                                        <span className="product-price">${product.price}</span>
+                                        <div className="quantity-controls">
+                                            <button className="add-to-cart" onClick={() => handleAddToCart(product.id)}>
+                                                <FaShoppingCart />
+                                            </button>
+                                            <div className="quantity-control">
+                                                <button>-</button>
+                                                <span>1</span>
+                                                <button>+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="product-actions">
+                                        <button className="view-details" onClick={() => handleProductClick(product.id)}>
+                                            View Details
+                                        </button>
+                                        <button className="buy-now" onClick={() => handleBuyNow(product.id)}>
+                                            Buy now
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -225,7 +257,7 @@ const ShopPage = () => {
                     </div>
                 )}
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };
