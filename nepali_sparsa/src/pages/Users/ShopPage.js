@@ -226,10 +226,7 @@ const ShopPage = () => {
                                     </p>
                                     <div className="price-quantity-container">
                                         <span className="product-price">${product.price}</span>
-                                        <div className="quantity-controls">
-                                            <button className="add-to-cart" onClick={() => handleAddToCart(product.id)}>
-                                                <FaShoppingCart />
-                                            </button>
+                                        <div className="quantity-controls"> 
                                             <div className="quantity-control">
                                                 <button>-</button>
                                                 <span>1</span>
@@ -238,6 +235,9 @@ const ShopPage = () => {
                                         </div>
                                     </div>
                                     <div className="product-actions">
+                                        <button className="add-to-cart" onClick={() => handleAddToCart(product.id)}>
+                                                <FaShoppingCart />
+                                            </button>
                                         <button className="view-details" onClick={() => handleProductClick(product.id)}>
                                             View Details
                                         </button>
