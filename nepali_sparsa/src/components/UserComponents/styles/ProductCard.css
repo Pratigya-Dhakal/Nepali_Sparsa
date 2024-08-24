@@ -1,128 +1,130 @@
 .product-card {
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 280px; /* Fixed width */
-    padding: 15px; /* Padding around the content */
-    cursor: pointer;
-    text-align: center;
-    position: relative;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    max-width: 280px; /* Adjust based on design */
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
 .image-slider {
-    position: relative;
     width: 100%;
-    height: 180px; /* Adjusted height for a more compact card */
+    height: 180px;
     overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
-.swiper-slide img {
+.product-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Ensure the entire image is visible */
-    border-radius: 10px;
+    object-fit: contain;
 }
 
 .product-details {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.product-details h3 {
-    font-size: 18px;
-    font-weight: 600;
+.title-row {
+    display: flex;
+    gap: 10px;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.cart-icon-btn {
+    background-color: transparent;
+    border: none;
     color: #333;
-    margin: 10px 0 5px; /* Reduced margin above the product name */
+    cursor: pointer;
+    font-size: 1.2rem;
+    align-items: flex-end;
 }
 
 .product-description {
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 10px;
-    max-height: 30px; /* Limiting the height for description */
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.product-price {
-    font-size: 24px;
-    font-weight: 700;
-    color: #762945;
-    margin-bottom: 10px;
-}
-
-.quantity-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px; /* Space between price and quantity controls */
-}
-
-.quantity-controls button {
-    background-color: #762945;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 0 8px;
-}
-
-.quantity-controls span {
-    font-size: 16px;
-    margin: 0 10px;
-    color: #333;
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
 }
 
 .product-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.product-price {
+    font-size: 1rem;
+    color: #000;
+    font-weight: bold;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity-btn {
+    background-color: #f0f0f0;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.quantity-btn i {
+    font-size: 0.5rem;
+}
+
+.quantity {
+    font-size: 1rem;
     margin-top: 5px;
+    width: 20px;
+    text-align: center;
 }
 
-.product-actions button {
-    flex: 1;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 25px;
-    transition: background-color 0.3s ease;
-    border: 2px solid transparent;
-    margin: 0 5px;
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
 }
 
-.product-actions .add-to-cart {
-    background-color: transparent;
-    color: #762945;
-    border: 2px solid #762945;
-}
-
-.product-actions .add-to-cart:hover {
-    background-color: #ECD1DC;
-    color: #762945;
-}
-
-.product-actions .buy-now {
-    background-color: #762945;
+.buy-now-btn {
+    background-color: #7e0e4a;
     color: white;
-    border: 2px solid #762945;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+    flex-grow: 1;
+    text-align: center;
 }
 
-.product-actions .buy-now:hover {
-    background-color: #5c1f2c;
+.view-details-btn {
+    background-color: white;
+    color: #4e0b2f;
+    border: 1px solid #7e0e4a;
 }
 
-.product-actions i {
-    margin-right: 5px;
-    font-size: 16px;
-    color: #762945;
+.view-details-btn:hover {
+    background-color: #f2f2f2;
+}
+
+.buy-now-btn:hover {
+    background-color: #5a1138;
 }

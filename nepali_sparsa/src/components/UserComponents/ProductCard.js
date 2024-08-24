@@ -1,27 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { FaShoppingCart } from 'react-icons/fa';
 import './styles/ProductCard.css';
 
 const ProductCard = ({ product }) => {
+    const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
 
+    const handleDecrement = () => {
+        if (quantity > 1) setQuantity(quantity - 1);
+    };
+
+    const handleIncrement = () => {
+        setQuantity(quantity + 1);
+    };
+
     const handleBuyNow = (e) => {
-        e.stopPropagation();  // Prevent triggering any parent click handlers
+        e.stopPropagation();
         navigate('/checkout');
     };
 
-    const handleViewDetails = (e) => {
-        e.stopPropagation();  // Prevent triggering any parent click handlers
+    const handleViewDetails = () => {
         navigate(`/products/${product.id}`);
+    };
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation();
+        // Add to cart logic here
     };
 
     return (
         <div className="product-card">
-            <div className="image-slider" onClick={handleViewDetails}>
+            <div className="image-slider">
                 <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
                     {product.images.map((image, index) => (
                         <SwiperSlide key={index}>
@@ -29,31 +43,37 @@ const ProductCard = ({ product }) => {
                                 src={`http://localhost:5000${image.url}`} 
                                 alt={product.name} 
                                 onError={(e) => e.target.src = '/path/to/default-image.jpg'}
+                                className="product-image"
                             />
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
             <div className="product-details">
-                <h3>{product.name}</h3>
-                
+                <div className="title-row">
+                    <h3 className="product-title">{product.name}</h3>
+                    <button className="cart-icon-btn" onClick={handleAddToCart}>
+                        <FaShoppingCart />
+                    </button>
+                </div>
+
                 <p className="product-description">{product.description}</p>
-                <div>
-                    <div className="product-price">${product.price.toFixed(2)}</div>
-                    <div className="quantity-controls">
-                        <button>-</button>
-                        <span>1</span>
-                        <button>+</button>
+                <div className="product-actions">
+                    <p className="product-price">$ {product.price}</p>
+                    <div className="quantity-control">
+                        <button className="quantity-btn" onClick={handleDecrement}>
+                            <i className="fa fa-minus"></i>
+                        </button>
+                        <span className="quantity">{quantity}</span>
+                        <button className="quantity-btn" onClick={handleIncrement}>
+                            <i className="fa fa-plus"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div className="product-actions">
-                <button className="add-to-cart">
-                    <i className="fa fa-shopping-cart"></i>
-                </button>
-                <button className="buy-now" onClick={handleBuyNow}>
-                    Buy now
-                </button>
+                <div className="button-row">
+                    <button className="view-details-btn" onClick={handleViewDetails}>View Details</button>
+                    <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
+                </div>
             </div>
         </div>
     );
