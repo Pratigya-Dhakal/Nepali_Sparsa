@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './styles/ShopPage.css';
 import Navbar from '../../components/UserComponents/Navbar';
 import Footer from '../../components/UserComponents/Footer';
+import ProductCard from '../../components/UserComponents/ProductCard'; // Import your ProductCard component
 import { FaShoppingCart } from 'react-icons/fa';
 
 const baseUrl = 'http://localhost:5000'; // Base URL for your API
@@ -107,23 +108,7 @@ const ShopPage = () => {
             setPage(prevPage => prevPage + 1);
         }
     };
-
-    const handleProductClick = (productId) => {
-        navigate(`/products/${productId}`); // Navigate to the product details page
-    };
-
-    const handleAddToCart = async (productId) => {
-        try {
-            await axios.post(`${baseUrl}/api/cart`, { productId }); // Update the database
-            navigate('/cart'); // Show the products in the cart page
-        } catch (error) {
-            console.error('Error adding to cart:', error);
-        }
-    };
-
-    const handleBuyNow = (productId) => {
-        navigate(`/checkout?product=${productId}`); // Navigate to the checkout page
-    };
+    const handleAddToCart = async (productId) => {};
 
     return (
         <div>
@@ -208,45 +193,13 @@ const ShopPage = () => {
 
                     <div className="product-grid">
                         {products.map(product => (
-                            <div key={product.id} className="product-card">
-                                <div className="product-image" onClick={() => handleProductClick(product.id)}>
-                                    {product.images && product.images.length > 0 ? (
-                                        <img src={`${baseUrl}${product.images[0].url}`} alt={product.name} />
-                                    ) : (
-                                        <img src="/path/to/default/image.jpg" alt={product.name} />
-                                    )}
-                                    {product.discount && <span className="sale-badge">SALE</span>}
-                                </div>
-                                <div className="product-details">
-                                    <h3 className="product-name">{product.name}</h3>
-                                    <p className="product-description">
-                                        {product.description.length > 50 ? 
-                                            product.description.substring(0, 50) + '...' : 
-                                            product.description}
-                                    </p>
-                                    <div className="price-quantity-container">
-                                        <span className="product-price">${product.price}</span>
-                                        <div className="quantity-controls"> 
-                                            <div className="quantity-control">
-                                                <button>-</button>
-                                                <span>1</span>
-                                                <button>+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="product-actions">
-                                        <button className="add-to-cart" onClick={() => handleAddToCart(product.id)}>
-                                                <FaShoppingCart />
-                                            </button>
-                                        <button className="view-details" onClick={() => handleProductClick(product.id)}>
-                                            View Details
-                                        </button>
-                                        <button className="buy-now" onClick={() => handleBuyNow(product.id)}>
-                                            Buy now
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                onProductClick={() => navigate(`/products/${product.id}`)}
+                                onAddToCart={() => handleAddToCart(product.id)}
+                                onBuyNow={() => navigate(`/checkout?product=${product.id}`)}
+                            />
                         ))}
                     </div>
                 </div>
