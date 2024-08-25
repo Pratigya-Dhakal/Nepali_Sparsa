@@ -24,6 +24,11 @@ enum DealType {
   FLASH_SALE
   DISCOUNT
 }
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
 
 model User {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
@@ -33,6 +38,8 @@ model User {
   firstName     String
   lastName      String
   phone         String?
+  dob           DateTime?
+  gender        Gender[]      @default([])
   role          Role
   verify        Verify         @default(NOTVERIFIED)
   address       UserAddress?
