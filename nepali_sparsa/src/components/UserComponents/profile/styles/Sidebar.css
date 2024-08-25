@@ -1,0 +1,49 @@
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.verified-account-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+}
+
+nav a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+
+nav a.active {
+    color: #0056b3;
+    font-weight: bold;
+}
+
+nav ul {
+    margin: 8px 0 16px 0;
+    padding-left: 16px;
+}
+
+nav ul li {
+    list-style-type: none;
+    margin-bottom: 8px;
+}
