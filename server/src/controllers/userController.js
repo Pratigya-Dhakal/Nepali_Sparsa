@@ -258,3 +258,71 @@ export const confirmOrder = async (req, res) => {
         res.status(500).json({ message: 'Error confirming order', error: error.message });
     }
 };
+export const getUserProfile = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                address: true,  // Include the user's address
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Update user profile
+export const updateUserProfile = async (req, res) => {
+    const { id } = req.params;
+    const { firstName, lastName, phone, dob, gender, address1, address2, city, state, country, postalCode } = req.body;
+
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                firstName,
+                lastName,
+                phone,
+                dob: dob ? new Date(dob) : undefined,
+                gender,
+                address: {
+                    upsert: {
+                        create: {
+                            address1,
+                            address2,
+                            city,
+                            state,
+                            country,
+                            postalCode,
+                        },
+                        update: {
+                            address1,
+                            address2,
+                            city,
+                            state,
+                            country,
+                            postalCode,
+                        },
+                    },
+                },
+            },
+            include: {
+                address: true,  // Return updated user address
+            },
+        });
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
