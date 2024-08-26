@@ -15,6 +15,8 @@ import ResetPasswordPage from '../../pages/Users/ResetPasswordPage';
 import CheckoutPage from '../../pages/Users/CheckoutPage';
 import CartPage from '../../pages/Users/CartPage';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import AccountPage from '../../pages/Users/AccountPage';
+import UserProfileCard from '../../components/UserComponents/profile/UserCard';
 
 const AppRoutes = () => {
     return (
@@ -23,6 +25,8 @@ const AppRoutes = () => {
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/verify-email" element={<EmailVerification />} />
             <Route path="/signIn" element={<SignInPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/profile" element={<UserProfileCard />} />
             <Route path="/signUp" element={<SignUpPage />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUsPage />} />
@@ -31,6 +35,7 @@ const AppRoutes = () => {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+
             
             {/* Protected Routes */}
             <Route path="/checkout" element={<PrivateRoute element={CheckoutPage} />} />
