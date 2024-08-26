@@ -1,63 +1,76 @@
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-// Get User Address
-export const getAddress = async (req, res) => {
-    try {
-        const address = await prisma.userAddress.findUnique({
-            where: { userId: req.user.id },
-        });
+export const createAddress = async (req, res) => {
+try {
+    const { userId, address1, address2, city, state, country, postalCode } = req.body;
 
-        if (!address) {
-            return res.status(404).json({ message: 'Address not found' });
-        }
+    const newAddress = await prisma.userAddress.create({
+    data: {
+        userId,
+        address1,
+        address2,
+        city,
+        state,
+        country,
+        postalCode,
+    },
+    });
 
-        res.json(address);
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
+    res.status(201).json(newAddress);
+} catch (error) {
+    res.status(500).json({ error: 'Failed to create address' });
+}
 };
 
-// Update or Create User Address
 export const updateAddress = async (req, res) => {
+try {
+    const { addressId } = req.params;
     const { address1, address2, city, state, country, postalCode } = req.body;
-    try {
-        const existingAddress = await prisma.userAddress.upsert({
-            where: { userId: req.user.id },
-            update: {
-                address1,
-                address2,
-                city,
-                state,
-                country,
-                postalCode,
-            },
-            create: {
-                userId: req.user.id,
-                address1,
-                address2,
-                city,
-                state,
-                country,
-                postalCode,
-            },
-        });
 
-        res.json({ message: 'Address updated successfully', address: existingAddress });
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
+    const updatedAddress = await prisma.userAddress.update({
+    where: { id: addressId },
+    data: {
+        address1,
+        address2,
+        city,
+        state,
+        country,
+        postalCode,
+    },
+    });
+
+    res.status(200).json(updatedAddress);
+} catch (error) {
+    res.status(500).json({ error: 'Failed to update address' });
+}
 };
 
-// Delete User Address
 export const deleteAddress = async (req, res) => {
-    try {
-        await prisma.userAddress.delete({
-            where: { userId: req.user.id },
-        });
+try {
+    const { addressId } = req.params;
 
-        res.json({ message: 'Address deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
+    await prisma.userAddress.delete({
+    where: { id: addressId },
+    });
+
+    res.status(200).json({ message: 'Address deleted successfully' });
+} catch (error) {
+    res.status(500).json({ error: 'Failed to delete address' });
+}
+};
+
+export const getUserAddresses = async (req, res) => {
+try {
+    const { userId } = req.params;
+
+    const addresses = await prisma.userAddress.findMany({
+    where: { userId },
+    });
+
+    res.status(200).json(addresses);
+} catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve addresses' });
+}
 };

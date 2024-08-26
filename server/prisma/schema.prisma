@@ -42,7 +42,7 @@ model User {
   gender        Gender[]      @default([])
   role          Role
   verify        Verify         @default(NOTVERIFIED)
-  address       UserAddress?
+  address       UserAddress[]
   orders        Order[]
   shoppingCart  ShoppingCart?
   comments      Comment[]
