@@ -85,3 +85,26 @@ const sendOrderConfirmationEmail = async (email, order) => {
         console.error('Error sending confirmation email:', error);
     }
 };
+
+export const getUserOrders = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                userId,
+            },
+            include: {
+                items: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error fetching user orders:', error);
+        res.status(500).json({ message: 'Failed to fetch orders' });
+    }
+};
