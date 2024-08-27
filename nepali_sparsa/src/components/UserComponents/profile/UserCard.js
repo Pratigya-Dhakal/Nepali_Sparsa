@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './styles/UserCard.css'; // Custom CSS for styling
-import Navbar from '../Navbar';
-import Sidebar from './Sidebar';
+import './styles/UserCard.css'; 
 
 const UserProfileCard = () => {
     const [user, setUser] = useState({});
@@ -77,9 +75,7 @@ const UserProfileCard = () => {
 
     return (
         <div>
-            <Navbar />
             <div className="main-container">
-                <Sidebar />
                 <div className="user-profile-card">
                     <h2>User Profile</h2>
 
