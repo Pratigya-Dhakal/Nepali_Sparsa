@@ -62,32 +62,31 @@ export const getProductByName = async (req, res) => {
 
 // Get products by category
 export const getProductsByCategory = async (req, res) => {
-const { categoryName } = req.params;
-try {
-    const products = await prisma.product.findMany({
-    where: {
-        category: {
-        name: categoryName
-        }
-    },
-    include: {
-        images: true,
-        category: true,
-        subcategory: true,
-        discount: true,
-        orderItems: true,
-        cartItems: true,
-        comments: true,
+    const { categoryName } = req.params;
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                category: {
+                    name: categoryName
+                }
+            },
+            include: {
+                images: true,
+                category: true,
+                subcategory: true,
+                discount: true,
+                orderItems: true,
+                cartItems: true,
+                comments: true,
+            }
+        });
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching products by category:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-    });
-    res.json(products);
-} catch (error) {
-    console.error('Error fetching products by category:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-}
 };
 
-// Get a product by ID
 // Get a product by ID
 export const getProductById = async (req, res) => {
     const { id } = req.params;
@@ -119,9 +118,6 @@ export const getProductById = async (req, res) => {
     }
 };
 
-
-
-// Get similar products by category
 // Get similar products by category
 export const getSimilarProducts = async (req, res) => {
     const { categoryName } = req.params;

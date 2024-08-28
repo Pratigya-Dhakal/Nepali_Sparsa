@@ -1,10 +1,13 @@
+// src/routes/productRoutes.js
+
 import express from 'express';
 import {
     getAllProducts,
     getProductByName,
     getProductsByCategory,
-    getProductById,getSimilarProducts
-} from '../controllers/productController.js'; // Ensure this path is correct
+    getProductById,
+    getSimilarProducts
+} from '../controllers/productController.js';
 
 const router = express.Router();
 
@@ -19,6 +22,8 @@ router.get('/category/:categoryName', getProductsByCategory);
 
 // Route to get a product by ID
 router.get('/:id', getProductById);
-router.get('/similar/:category', getSimilarProducts);
+
+// Route to get similar products by category
+router.get('/similar/:categoryName', getSimilarProducts);
 
 export default router;
