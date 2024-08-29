@@ -1,16 +1,38 @@
-// src/controllers/productController.js
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // Get all products with optional filters
 export const getAllProducts = async (req, res) => {
-    const { page = 0, limit = 20 } = req.query; // Default to page 0 and limit 20 if not provided
+    const { page = 0, limit = 20, category, subcategory, minPrice, maxPrice, size, sort } = req.query;
 
     try {
+        const filters = {};
+        if (category) {
+            filters.category = { name: category };
+        }
+        if (subcategory) {
+            filters.subcategory = { name: subcategory };
+        }
+        if (minPrice && maxPrice) {
+            filters.price = { gte: parseFloat(minPrice), lte: parseFloat(maxPrice) };
+        }
+        if (size) {
+            filters.size = size;
+        }
+
+        const sortOption = {};
+        if (sort === 'price-asc') {
+            sortOption.price = 'asc';
+        } else if (sort === 'price-desc') {
+            sortOption.price = 'desc';
+        }
+
         const products = await prisma.product.findMany({
             skip: page * limit,
             take: parseInt(limit),
+            where: filters,
+            orderBy: sortOption,
             include: {
                 images: true,
                 category: true,
@@ -19,11 +41,10 @@ export const getAllProducts = async (req, res) => {
                 orderItems: true,
                 cartItems: true,
                 comments: true,
-            }
+            },
         });
 
-        // Fetch total count of products for pagination info
-        const totalCount = await prisma.product.count();
+        const totalCount = await prisma.product.count({ where: filters });
 
         res.json({ products, totalCount });
     } catch (error) {
@@ -34,7 +55,7 @@ export const getAllProducts = async (req, res) => {
 
 // Get products by name
 export const getProductByName = async (req, res) => {
-    const { name } = req.params; // Use req.params for URL parameters
+    const { name } = req.params;
     try {
         const products = await prisma.product.findMany({
             where: {
@@ -91,10 +112,6 @@ export const getProductsByCategory = async (req, res) => {
 export const getProductById = async (req, res) => {
     const { id } = req.params;
 
-    if (!id || id.length !== 24) { // MongoDB ObjectId is 24 hex characters
-        return res.status(400).json({ error: 'Invalid product ID' });
-    }
-
     try {
         const product = await prisma.product.findUnique({
             where: { id },
@@ -122,26 +139,15 @@ export const getProductById = async (req, res) => {
 export const getSimilarProducts = async (req, res) => {
     const { categoryName } = req.params;
 
-    if (!categoryName) {
-        console.error('Category name is missing in request');
-        return res.status(400).json({ error: 'Category name is required' });
-    }
-
     try {
-        // Log the received category name
-        console.log(`Received categoryName: ${categoryName}`);
-
-        // Find the category by name
         const category = await prisma.productCategory.findUnique({
             where: { name: categoryName }
         });
 
         if (!category) {
-            console.error('Category not found');
             return res.status(404).json({ error: 'Category not found' });
         }
 
-        // Fetch products under this category
         const products = await prisma.product.findMany({
             where: {
                 categoryId: category.id
@@ -156,7 +162,6 @@ export const getSimilarProducts = async (req, res) => {
         });
 
         if (!products.length) {
-            console.error('No similar products found');
             return res.status(404).json({ message: 'No similar products found' });
         }
 
