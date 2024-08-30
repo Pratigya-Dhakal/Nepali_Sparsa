@@ -1,5 +1,3 @@
-// src/components/login/logout.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -24,9 +22,9 @@ const Logout = () => {
             await axios.post('http://localhost:5000/api/admin/logout', { refreshToken });
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            navigate('/');
+            navigate('/admin');
         } catch (error) {
-            console.error('Logout error:', error);
+            console.error('Logout error:', error.response ? error.response.data : error.message);
             setError('Logout failed. Please try again.');
         } finally {
             setLoading(false);
