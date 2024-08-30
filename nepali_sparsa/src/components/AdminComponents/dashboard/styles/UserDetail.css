@@ -76,8 +76,7 @@ h2 {
 }
 
 .personal-info,
-.address-section,
-.orders-section {
+.address-section{
     width: 100%;
     margin-bottom: 20px;
 }

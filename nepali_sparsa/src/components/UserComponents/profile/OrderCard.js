@@ -2,12 +2,10 @@ import React from 'react';
 import './styles/Order.css';
 
 const OrderCard = ({ order }) => {
-    // Handle case where order might be undefined or null
     if (!order) {
         return <div>No order data available</div>;
     }
 
-    // Format date function
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);

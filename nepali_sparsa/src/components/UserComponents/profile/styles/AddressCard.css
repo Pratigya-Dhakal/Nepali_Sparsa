@@ -1,24 +1,108 @@
-div {
-    margin-bottom: 10px;
+.address-management-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-input {
+.address-management-container h2,
+.address-management-container h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 22px;
+    text-align: center;
+}
+
+.saved-addresses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.address-card {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.address-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.address-card p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.address-card button {
+    padding: 8px 15px;
+    background-color: #762945;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.address-card button:hover {
+    background-color: #5e2137;
+}
+
+.edit-address-container {
+    margin-top: 30px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-address-container input {
     display: block;
-    margin-bottom: 5px;
-    padding: 8px;
+    margin-bottom: 12px;
+    padding: 10px;
     width: 100%;
     box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-button {
+.edit-address-container input:focus {
+    border-color: #762945;
+    outline: none;
+}
+
+.edit-address-container button {
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
     margin-right: 10px;
 }
 
-button:hover {
+.edit-address-container button:hover {
     background-color: #45a049;
+}
+
+.edit-address-container button:last-child {
+    background-color: #dc3545;
+}
+
+.edit-address-container button:last-child:hover {
+    background-color: #c82333;
 }

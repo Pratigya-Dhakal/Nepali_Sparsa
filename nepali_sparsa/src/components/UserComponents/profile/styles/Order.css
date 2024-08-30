@@ -4,6 +4,8 @@
     padding: 16px;
     margin-bottom: 16px;
     background-color: #fff;
+    max-width: 800px; /* Set the max-width */
+    margin: 0 auto 16px auto; /* Center the card */
 }
 
 .order-header {
